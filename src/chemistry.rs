@@ -1,39 +1,74 @@
 #![allow(clippy::needless_return)]
 
-// Chemistry terms used here:
-// chemical formula -- this references a molecule (one or more elements with bonds between them), including its state.
-// chemical equation -- this is a notation specialized to chemistry -- it has concentration, arrows, equality, "addition" along with 
-//    some special symbols for operators and (mostly) chemical formulas for operands.
-//    Operand exceptions are the equilibrium constant, numbers, and identifiers.
-//    Although a chemical equation is a superset of a chemical formula, because we want to distinguish the two (e.g., '=' is in both),
-//      we require that chemical equation is an mrow
-//    FIX?? -- can it be an adorned mrow?
-//    Note: with the current definition, if any element in a potential chem equation is ruled out, the entire mrow is ruled out.
+// Chemistry detection overview
+// ============================
 //
-// The general flow is that for every element that looks like a chem formula/equation, we mark it with data-likely-[equation/formula]
-// After we are done marking "likely", we go back and either delete them or replace them with data-[equation/formula].
-// Note: anything already marked with data-[equation/formula] doesn't need recomputation later (essentially the result is cached)
+// Terms
+// -----
+// chemical formula -- a molecule (one or more elements with bonds), including state.
+// chemical equation -- chemistry-specific notation with concentration, arrows, "=", "+", etc.,
+//    and (mostly) chemical formulas as operands. Exceptions: equilibrium constant, numbers, identifiers.
+//    Equations are required to be an mrow (FIX?: adorned mrow?). If any child rules an equation out,
+//    the whole mrow is ruled out. Formula and equation are distinguished because some ops (e.g. "=")
+//    appear in both.
 //
-// There is a chicken and egg problem with detecting chemistry: to more reliably detect it, we need good structure.
-// However, to get the structure right (e.,g "=" being a double bond, not equality; chem elements being in 'mi's; ...),
-//   we need to know "=" is part of a chemical formula.
-// The imperfect solution used is:
-//   As the final step of each recursive call to 'clean_mathml',
-//     1. mi/mtext: is it a chemical element(s) or one of the symbols used in chemical formulas (not equations).
-//        If so, mark it MAYBE_CHEMISTRY.
-//     2. msub/msup/msubsup/mmultiscripts: is base marked MAYBE_CHEMISTRY and the scripts are potential adornments, mark it MAYBE_CHEMISTRY
-//     3. mrows: these take a few passes (remember, they aren't structured properly yet)
-//        On the assumption that chemistry is not common we implement a "show me" attitude before changing the structure.
-//        Pass 1:
-//        a) for any run of mi/mtext that can be re-split into chem elements, split them and mark them if it is at least 3 chars long
-//        b) if there are any potential chem formula operators (e.g., "=" and ":") and the previous node is marked MAYBE_CHEMISTRY,
-//           mark this as MAYBE_CHEMISTRY
-//        Pass 2: (assuming something was marked in pass 1)
-//        a) find the first marked child and then the last consecutive marked child and trim any mo's from the ends
-//        b) evaluate the likelihood that the sequence is chemistry
-//           yes: replace mathml children with new (potentially restructured) children
-//           no: clear all the marks for the old children
-// After canonicalization, we take another pass looking for chemical equations and marking them if found.
+// Pipeline (chicken-and-egg with structure)
+// -----------------------------------------
+// Reliable detection wants good structure, but fixing structure (bonds vs equality, split/merge
+// element tokens) needs to know it is chemistry. Approach:
+//   During clean_mathml (bottom-up):
+//     1. mi/mtext: known chem element / abbreviation / nuclear symbol → MAYBE_CHEMISTRY
+//     2. msub/msup/msubsup/mmultiscripts: chem-looking base + chem-looking scripts → MAYBE_CHEMISTRY
+//     3. mrows ("show me" before rewriting, since chemistry is uncommon):
+//        Pass 1: split long mi/mtext into elements; mark bond-like ops next to MAYBE_CHEMISTRY
+//        Pass 2: consecutive marked run → score; keep/restructure if chemistry, else clear marks
+//   After canonicalize, scan_and_mark_chemistry promotes MAYBE_* to data-chem-formula /
+//   data-chem-equation (or undoes temporary changes for a second parse).
+//
+// Forced chemistry (skip / override heuristics)
+// ---------------------------------------------
+// * Preference Chemistry != "Off", or intent :chemical-formula / :chemical-equation
+// * MathJax mhchem: data-latex starting with control word \ce (not e.g. \centering) is treated like
+//   intent=":chemical-equation" (set on the node and lifted to math). Skipped under LiteralSpeak
+//   or ancestor/self intent :literal (canonicalize must not chem-rewrite literal markup).
+//
+// Scoring model
+// -------------
+// Likelihoods are integers. CHEMISTRY_THRESHOLD (5) accepts; NOT_CHEMISTRY (-10000) vetoes;
+// partial negatives (e.g. -3, -4) can accumulate. Consecutive positive formula children get a bonus.
+//
+// Element recognition
+// -------------------
+// * Periodic-table symbols (correct capitalization) via elements_rs
+// * Abbreviations Me, Et, R, Ph, X (Ac stays actinium, not acetyl)
+// * Scores: 1-letter italic 1, mathvariant=normal 2, 2-letter 3; nuclear e/p/n/α/β/γ score 0
+// * Token repair: split multi-element leaves ("NaCl"); merge adjacent single letters ("N""a")
+//
+// Formula heuristics (likely_chem_formula / adorned / operators)
+// -------------------------------------------------------------
+// * Subscripts: integers (weak +); states s/l/g/aq/eau (+2); n / 2n-like weaker (-)
+// * Superscripts: charges (+/-/·), roman oxidation states, primes on R, digits+charge
+// * mmultiscripts / nuclides: mass/atomic-number ranges vs Z; electron ⁰₋₁e; Lewis-dot prescripts
+// * Bonds/ops: - ⋅ : = ∷ ≡ ::: ≣ :::: ⋮; (=)/(≡) only if neighbor elements allow double/triple bonds
+//   (CH₂ special-case for C=); ( ) [ ] and invisible ops are neutral
+// * Bracketed molecule groups: bonus if parent is scripted (multiplicity)
+// * Short known 1–2 letter formulae from a whitelist can bump to threshold
+// * Element order (IUPAC-inspired, is_order_ok): reject noble gases in compounds; allow if structural
+//   (repeated element), ends with H (e.g. OH), contains C+H+O, Hill/alphabetical, or electronegativity order
+//
+// Equation heuristics (likely_chem_equation / sanity check)
+// --------------------------------------------------------
+// * Ops: + = - · ℃ ° ‡ ∆ ×; reaction/equilibrium/resonance arrows (incl. Unicode 17 and MathJax PUA)
+// * Arrows may be under/over-scripted; mhchem missing-arrow mover ↽/⇀ hack
+// * Equilibrium constant K / K_… and following mfrac get credit
+// * States (g)/(aq)/… and concentrations [formula] in equation context
+// * Sanity: non-empty chem elements; for LHS op RHS with =/arrow, element sets should match unless
+//   both sides have nuclear-style prescripts (decay)
+//
+// Accept / reject
+// ---------------
+// Accept when forced (\ce / chem intent) or likelihood ≥ threshold (formula preferred over equation
+// if both fit). Otherwise clear MAYBE marks and undo split/merge/added nodes if needed.
 
 use sxd_document_no_unsafe::dom::{Element, Document, ChildOfElement};
 #[allow(unused_imports)]
@@ -93,7 +128,10 @@ fn is_chem_equation_arrow(ch: char) -> bool {
         '↔' | '⟷' | '⇔' | '⟺' |
         // vertical / other chem arrows
         '↑' | '↓' | '↿' | '↾' | '⇃' | '⇂' | '⥮' | '⥯' | '⇷' | '⇸' | '⤉' | '⤈' |
-        '\u{1f8d0}' | '\u{1f8d1}' | '\u{1f8d2}' | '\u{1f8d3}' | '\u{1f8d4}' | '\u{1f8d5}'  // new Unicode equilibrium arrows
+        '\u{1f8d0}' | '\u{1f8d1}' | '\u{1f8d2}' | '\u{1f8d3}' | '\u{1f8d4}' | '\u{1f8d5}' | // new Unicode equilibrium arrows
+        // MathJax 4 PUA chars (stand-ins for real arrows; see unicode-full.yaml)
+        '\u{E428}' | '\u{E429}' | '\u{E42A}' | '\u{E408}' | '\u{E409}' | '\u{E40A}' |
+        '\u{E42B}' | '\u{E42C}' | '\u{E42D}' | '\u{E42E}'
     )
 }
 
@@ -121,8 +159,70 @@ fn has_inherited_property(mathml: Element, property: &str) -> bool {
     return false;
 }
 
+/// MathJax stores the TeX source in `data-latex`. mhchem's `\ce` is a control word, so the next
+/// character must not continue the name (`\centering` is not chemistry).
+fn latex_starts_with_mhchem_ce(latex: &str) -> bool {
+    let Some(rest) = latex.trim_start().strip_prefix(r"\ce") else {
+        return false;
+    };
+    return rest.chars().next().is_none_or(|ch| !ch.is_ascii_alphabetic());
+}
+
+/// `:literal` intent and LiteralSpeak both mean "read what is written", so `\ce` must not force chemistry.
+fn literal_suppresses_chemical_equation(mathml: Element) -> bool {
+    let pref_manager = crate::prefs::PreferenceManager::get();
+    if pref_manager.borrow().pref_to_string("SpeechStyle") == "LiteralSpeak" {
+        return true;
+    }
+    let mut current = mathml;
+    loop {
+        if has_chem_intent(current, ":literal") {
+            return true;
+        }
+        if name(current) == "math" || current.parent().is_none() {
+            break;
+        }
+        current = get_parent(current);
+    }
+    return false;
+}
+
+/// A `data-latex` value that starts with `\ce` is the same as `intent=":chemical-equation"`.
+/// The attribute is usually on `math`, it could be on a descendant.
+/// When this element has no intent yet, the chemical-equation intent is recorded so later
+/// speech and braille see the same markup an author would have written.
+/// Intent is also set on the `math` root (if it has none) so `scan_and_mark_chemistry` sees it
+/// without a separate tree walk -- this is called from the chemistry-marking path.
+/// Returns true when `\ce` applies.
+fn mhchem_ce_as_chemical_equation(mathml: Element) -> bool {
+    let latex_attr = mathml.attribute_value("data-latex");
+    let Some(latex) = latex_attr.as_deref() else {
+        return false;
+    };
+    if !latex_starts_with_mhchem_ce(latex) ||
+       literal_suppresses_chemical_equation(mathml) {
+        return false;
+    }
+    if mathml.attribute_value(INTENT_ATTR).is_none() {
+        mathml.set_attribute_value(INTENT_ATTR, ":chemical-equation");
+    }
+    // Lift to math so the post-canonicalize scan treats the whole expression as chemistry.
+    let mut current = mathml;
+    while name(current) != "math" && current.parent().is_some() {
+        current = get_parent(current);
+    }
+    if name(current) == "math" &&
+       current.attribute_value(INTENT_ATTR).is_none() {
+        current.set_attribute_value(INTENT_ATTR, ":chemical-equation");
+    }
+    return true;
+}
+
 pub fn is_chemistry_off(mathml: Element) -> bool {
-    if has_chem_intent(mathml, ":chemical-formula") || has_chem_intent(mathml, ":chemical-equation") {
+    // Also applies mhchem `\ce` → `:chemical-equation` when present on this element.
+    if has_chem_intent(mathml, ":chemical-formula") ||
+       has_chem_intent(mathml, ":chemical-equation") ||
+       mhchem_ce_as_chemical_equation(mathml) {
         return false;
     }
     let pref_manager = crate::prefs::PreferenceManager::get();
@@ -481,6 +581,8 @@ pub fn convert_leaves_to_chem_elements(mathml: Element) -> Option<Vec<Element>> 
 /// 
 /// Returns true if not chemistry -- added attrs, mrows, and leaves are removed in preparation for a second parse
 pub fn scan_and_mark_chemistry(mathml: Element) -> bool {
+    // `\ce` was turned into `:chemical-equation` during cleaning via `is_chemistry_off` /
+    // `mhchem_ce_as_chemical_equation` (including lifting intent onto `math`).
     if is_chemistry_off(mathml) {
         return true;
     }
@@ -488,13 +590,8 @@ pub fn scan_and_mark_chemistry(mathml: Element) -> bool {
     let child = as_element(mathml.children()[0]);
     // debug!("scan_and_mark_chemistry:\n{}", mml_to_string(child));
     assert_eq!(name(mathml), "math");
-    let is_chemistry = if let Some(latex) = mathml.attribute_value("data-latex").as_deref() {
-        // MathJax v4 includes this really useful info -- if it starts \ce -- we have Chemistry
-        // need to determine if it is an equation or a formula
-        latex.trim_start().starts_with(r"\ce") 
-    } else {
-        has_chem_intent(mathml, ":chemical-formula") || has_chem_intent(mathml, ":chemical-equation")
-    };
+    let is_chemistry = has_chem_intent(mathml, ":chemical-formula") ||
+        has_chem_intent(mathml, ":chemical-equation");
 
     if is_chemistry || is_chemistry_sanity_check(mathml) {
         assert_eq!(mathml.children().len(), 1);
@@ -911,6 +1008,8 @@ fn is_chemistry_sanity_check(mathml: Element) -> bool {
 /// Looks at the children of the element and uses heuristics to decide whether this is a chemical equation.
 /// This assumes canonicalization of characters has happened
 fn likely_chem_equation(mathml: Element) -> i32 {
+    let _ = mhchem_ce_as_chemical_equation(mathml);   // check for MathJax mhchem markers
+
     // mfrac -- could be a ratio of concentrations
     if name(mathml) != "mrow" && name(mathml) != "mtd" && name(mathml) != "mfrac" {
         return NOT_CHEMISTRY;
@@ -1137,6 +1236,7 @@ fn likely_chem_superscript(sup: Element) -> i32 {
 /// * an mrow made up of only chemical formulas
 fn likely_chem_formula(mathml: Element) -> i32 {
     // debug!("start likely_chem_formula:\n{}", mml_to_string(mathml));
+    let _ = mhchem_ce_as_chemical_equation(mathml);   // check for MathJax mhchem markers
     if let Some(value) = get_marked_value(mathml) {
         return value;       // already marked
     }
@@ -1940,8 +2040,7 @@ mod chem_tests {
 
     fn chem_test<F>(f: F) -> Result<()>
     where
-        F: FnOnce() -> Result<()> + std::panic::UnwindSafe,
-    {
+        F: FnOnce() -> Result<()> + std::panic::UnwindSafe, {
         init_panic_handler();
         let result = catch_unwind(AssertUnwindSafe(f));
         return report_any_panic(result);
@@ -1949,8 +2048,7 @@ mod chem_tests {
 
     fn with_parsed_mrow<F, R>(test: &str, f: F) -> Result<R>
     where
-        F: FnOnce(Element) -> Result<R>,
-    {
+        F: FnOnce(Element) -> Result<R>, {
         let wrapped;
         let math_str = if test.starts_with("<math") {
             test
@@ -2419,6 +2517,169 @@ mod chem_tests {
             <mi>C</mi>
         </math>";
         are_strs_canonically_equal_result(test, target, &[])
+    }
+
+    #[test]
+    fn mhchem_ce_on_math_is_chemical_equation() -> Result<()> {
+        // A lone "C" is below the chemistry threshold. Leading `\ce` in data-latex forces the
+        // same chemical-equation marking as intent=":chemical-equation".
+        let test = r#"<math data-latex="\ce{C}"><mi>C</mi></math>"#;
+        let target = r#"<math data-latex="\ce{C}" intent=":chemical-equation">
+            <mi data-chem-element="5">C</mi>
+        </math>"#;
+        return are_strs_canonically_equal_result(test, target, &[]);
+    }
+
+    #[test]
+    fn mhchem_ce_on_descendant_is_chemical_equation() -> Result<()> {
+        // data-latex is usually on math, but MathJax can put `\ce` on an inner element.
+        // Intent is set on that element and lifted to math during chemistry marking.
+        let test = r#"<math><mrow data-latex="\ce{C}"><mi>C</mi></mrow></math>"#;
+        let target = r#"<math intent=":chemical-equation">
+            <mi data-latex="\ce{C}" intent=":chemical-equation" data-chem-element="5">C</mi>
+        </math>"#;
+        return are_strs_canonically_equal_result(test, target, &[]);
+    }
+
+    #[test]
+    fn mhchem_ce_command_boundary() -> Result<()> {
+        // `\centering` starts with the letters `\ce` but is a different control word.
+        let test = r#"<math data-latex="\centering"><mi>C</mi></math>"#;
+        let target = r#"<math data-latex="\centering"><mi>C</mi></math>"#;
+        return are_strs_canonically_equal_result(test, target, &[]);
+    }
+
+    #[test]
+    fn mhchem_ce_suppressed_by_literal_intent() -> Result<()> {
+        let test = r#"<math intent=":literal" data-latex="\ce{C}"><mi>C</mi></math>"#;
+        let target = r#"<math intent=":literal" data-latex="\ce{C}"><mi>C</mi></math>"#;
+        return are_strs_canonically_equal_result(test, target, &[]);
+    }
+
+    #[test]
+    fn mhchem_ce_suppressed_by_ancestor_literal() -> Result<()> {
+        // `:literal` on an ancestor covers a descendant whose data-latex starts with `\ce`.
+        let test = r#"<math intent=":literal"><mrow data-latex="\ce{C}"><mi>C</mi></mrow></math>"#;
+        let target = r#"<math intent=":literal"><mi data-latex="\ce{C}">C</mi></math>"#;
+        return are_strs_canonically_equal_result(test, target, &[]);
+    }
+
+    #[test]
+    fn mhchem_ce_mathjax_pua_long_arrow() -> Result<()> {
+        // MathJax v4 mhchem uses PUA U+E429 for \mhchemlongrightarrow (⟶).
+        let test = r#"
+        <math xmlns="http://www.w3.org/1998/Math/MathML" data-latex="\ce{CO2 + C -&gt; 2 CO}" display="block">
+        <mrow data-mjx-texclass="ORD" data-latex="{\mathrm{CO}{\vphantom{A}}_{\smash[t]{2}} {}+{} \mathrm{C} {}\mathrel{\mhchemlongrightarrow}{} 2\,\mathrm{CO}}">
+            <mrow data-mjx-texclass="ORD" data-latex="\mathrm{CO}">
+            <mi data-mjx-auto-op="false" data-latex="CO">CO</mi>
+            </mrow>
+            <msub data-latex="{\vphantom{A}}_{\smash[t]{2}}">
+            <mrow data-mjx-texclass="ORD" data-latex="{\vphantom{A}}">
+                <mrow data-mjx-texclass="ORD" data-latex="\vphantom{A}">
+                <mpadded width="0">
+                    <mphantom>
+                    <mi data-latex="A">A</mi>
+                    </mphantom>
+                </mpadded>
+                </mrow>
+            </mrow>
+            <mrow data-mjx-texclass="ORD" data-latex="{\smash[t]{2}}">
+                <mrow data-mjx-texclass="ORD" data-latex="\smash[t]{2}">
+                <mpadded height="0">
+                    <mn data-latex="2">2</mn>
+                </mpadded>
+                </mrow>
+            </mrow>
+            </msub>
+            <mrow data-mjx-texclass="ORD" data-latex="{}"></mrow>
+            <mo data-latex="+">+</mo>
+            <mrow data-mjx-texclass="ORD" data-latex="{}"></mrow>
+            <mrow data-mjx-texclass="ORD" data-latex="\mathrm{C}">
+            <mi mathvariant="normal" data-latex="C">C</mi>
+            </mrow>
+            <mrow data-mjx-texclass="ORD" data-latex="{}"></mrow>
+            <mrow data-mjx-texclass="REL" data-latex="\mathrel{\mhchemlongrightarrow}">
+            <mo data-mjx-variant="-mhchem" data-mjx-texclass="REL" stretchy="true" data-latex="\mhchemlongrightarrow">&#xE429;</mo>
+            </mrow>
+            <mrow data-mjx-texclass="ORD" data-latex="{}"></mrow>
+            <mn data-latex="2">2</mn>
+            <mspace width="0.167em" data-latex="\,"></mspace>
+            <mrow data-mjx-texclass="ORD" data-latex="\mathrm{CO}">
+            <mi data-mjx-auto-op="false" data-latex="CO">CO</mi>
+            </mrow>
+        </mrow>
+        </math>"#;
+        // Expect \ce forcing a chemical equation, mhchem script cleanup to mmultiscripts,
+        // and the MathJax 4 PUA long arrow marked as a chemical-equation operator.
+        let target = r#"
+            <math data-latex='\ce{CO2 + C -&gt; 2 CO}' display='block' intent=':chemical-equation'>
+            <mrow data-latex='{\mathrm{CO}{\vphantom{A}}_{\smash[t]{2}} {}+{} \mathrm{C} {}\mathrel{\mhchemlongrightarrow}{} 2\,\mathrm{CO}}' data-mjx-texclass='ORD' data-chem-equation='11'>
+                <mrow data-changed='added' data-chem-equation='5'>
+                <mrow data-changed='added' data-chem-equation='5'>
+                    <mi mathvariant='normal' data-chem-element='1'>C</mi>
+                    <mo data-changed='added' data-chem-equation-op='0'>&#x2063;</mo>
+                    <mmultiscripts data-mjx-texclass='ORD' data-latex='CO' data-mjx-auto-op='false' data-chem-formula='2'>
+                    <mi mathvariant='normal' data-mjx-texclass='ORD' data-latex='CO' data-mjx-auto-op='false' data-split='true' data-chem-element='1'>O</mi>
+                    <mn data-mjx-texclass='ORD' data-latex='2'>2</mn>
+                    <none></none>
+                    </mmultiscripts>
+                </mrow>
+                <mo data-latex='+' data-chem-equation-op='1'>+</mo>
+                <mi data-mjx-texclass='ORD' data-latex='C' mathvariant='normal' data-chem-element='2'>C</mi>
+                </mrow>
+                <mo data-latex='\mhchemlongrightarrow' data-mjx-texclass='REL' data-mjx-variant='-mhchem' stretchy='true' data-chem-equation-op='1'>&#xE429;</mo>
+                <mrow data-changed='added' data-chem-equation='5'>
+                <mn data-latex='2'>2</mn>
+                <mo data-changed='added' data-chem-equation-op='0'>&#x2062;</mo>
+                <mrow data-changed='added' data-chem-equation='5'>
+                    <mi mathvariant='normal' data-previous-space-width='0.167' data-chem-element='1'>C</mi>
+                    <mo data-changed='added' data-chem-equation-op='0'>&#x2063;</mo>
+                    <mi mathvariant='normal' data-mjx-texclass='ORD' data-latex='CO' data-mjx-auto-op='false' data-split='true' data-chem-element='1'>O</mi>
+                </mrow>
+                </mrow>
+            </mrow>
+            </math>
+"#;
+        return are_strs_canonically_equal_result(test, target, &[]);
+    }
+
+    #[test]
+    fn mhchem_ce_equation_from_mathjax() -> Result<()> {
+        // MathJax mhchem: `\ce` is on math, and the right-hand side is split into letters.
+        let test = r#"<math data-latex="\ce{NaCl}&lt;=&gt;Na+Cl">
+            <mi>NaCl</mi>
+            <mo>&lt;=&gt;</mo>
+            <mi>N</mi><mi>a</mi><mo>+</mo><mi>C</mi><mi>l</mi>
+        </math>"#;
+        let target = r#"<math data-latex="\ce{NaCl}&lt;=&gt;Na+Cl" intent=":chemical-equation">
+            <mrow data-changed="added" data-chem-equation="8">
+                <mrow data-changed="added" data-chem-equation="7">
+                    <mi data-chem-element="3">Na</mi>
+                    <mo data-changed="added" data-chem-equation-op="0">&#x2063;</mo>
+                    <mi data-split="true" data-chem-element="3">Cl</mi>
+                </mrow>
+                <mo>&lt;=&gt;</mo>
+                <mrow data-changed="added" data-chem-equation="4">
+                    <mi data-merged="true" data-chem-element="3">Na</mi>
+                    <mo data-chem-equation-op="1">+</mo>
+                    <mi data-merged="true" data-chem-element="3">Cl</mi>
+                </mrow>
+            </mrow>
+        </math>"#;
+        return are_strs_canonically_equal_result(test, target, &[]);
+    }
+
+    #[test]
+    fn mhchem_ce_suppressed_by_literal_speak() -> Result<()> {
+        // Preferences are unknown until the rules directory is loaded.
+        crate::interface::set_rules_dir(crate::abs_rules_dir_path())?;
+        let previous = crate::prefs::PreferenceManager::get().borrow().pref_to_string("SpeechStyle");
+        crate::interface::set_preference("SpeechStyle", "LiteralSpeak")?;
+        let test = r#"<math data-latex="\ce{C}"><mi>C</mi></math>"#;
+        let target = r#"<math data-latex="\ce{C}"><mi>C</mi></math>"#;
+        let result = are_strs_canonically_equal_result(test, target, &[]);
+        crate::interface::set_preference("SpeechStyle", &previous)?;
+        return result;
     }
 
     #[test]

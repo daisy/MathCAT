@@ -128,9 +128,9 @@ fn tensor_mmultiscripts() -> Result<()> {
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "nagy r posskriptek 4, subscript i superscript j subscript k subscript l")?;
+            "nagy r posskriptek 4, subscript i és superscript semmi subscript semmi és superscript j subscript k és superscript semmi subscript l és superscript semmi")?;
     test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "nagy r posskriptek 4, sub i super j sub k sub l")?;
+            "nagy r posskriptek 4, sub i és super semmi sub semmi és super j sub k és super semmi sub l és super semmi")?;
             return Ok(());
 
 }
@@ -143,7 +143,7 @@ fn huge_num_mmultiscripts() -> Result<()> {
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("hu", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "nagy r preskriptek 4, pre subscript nagy i, pre superscript nagy j és váltakozó preskriptek nagy k none nagy l none preskriptek vége és posskriptek 5, subscript i superscript j subscript k subscript l és váltakozó szkriptek m none szkriptek vége")?;
+            "nagy r preskriptek 4, pre subscript nagy i és pre superscript semmi, pre subscript semmi és pre superscript nagy j, pre subscript nagy k és pre superscript semmi, pre subscript nagy l és pre superscript semmi és posskriptek 5, subscript i és superscript semmi subscript semmi és superscript j subscript k és superscript semmi subscript l és superscript semmi subscript m és superscript semmi")?;
             return Ok(());
 
 }
@@ -483,7 +483,7 @@ fn literal_speak_perpendicular() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("hu", "LiteralSpeak", expr, "nagy a jobbra nyíl, merőleges nagy b jobbra nyíl")?;
+  test("hu", "LiteralSpeak", expr, "nagy a jobbra nyíl, felfelé mutató merőleges, nagy b jobbra nyíl")?;
   return Ok(());
 
 }
@@ -504,7 +504,7 @@ fn literal_speak_chars() -> Result<()> {
             </mrow>
         </mfenced>
     </math>"#; 
-  test("hu", "LiteralSpeak", expr, "függőleges vonal; x kereszt, y pont z per 2; plusz a; dupla függőleges vonal, b plusz x felkiáltójel; függőleges vonal")?;
+  test("hu", "LiteralSpeak", expr, "függőleges vonal; x kereszt, y szorozva z per 2; plusz a; dupla függőleges vonal, b plusz x felkiáltójel; függőleges vonal")?;
   return Ok(());
 
 }
@@ -569,7 +569,7 @@ fn literal_intent_property() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("hu", "SimpleSpeak", expr, "nagy a jobbra nyíl, merőleges nagy b jobbra nyíl")?;
+  test("hu", "SimpleSpeak", expr, "nagy a jobbra nyíl, a(z) merőleges, nagy b jobbra nyíl")?;
   return Ok(());
 
 }

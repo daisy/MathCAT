@@ -2816,9 +2816,7 @@ fn remove_optional_group_indicators(braille: &str) -> String {
     for (i, &ch) in chars.iter().enumerate() {
         if ch == 'b' {
             stack.push(i);
-        } else if ch == 'e'
-            && let Some(b_idx) = stack.pop()
-        {
+        } else if ch == 'e' && let Some(b_idx) = stack.pop() {
             pairs.push((b_idx, i));
         }
     }

@@ -116,8 +116,8 @@ fn tensor_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts>
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
-    test_prefs("fr", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "r majuscule avec 4 postscripts, indice i exposant j indice k indice l")?;
-    test_prefs("fr", "SimpleSpeak", vec![("Verbosity", "Medium")], expr, "r majuscule avec 4 postscripts, indice i exposant j indice k indice l")?;
+    test_prefs("fr", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, "r majuscule avec 4 postscripts, indice i et exposant rien indice rien et exposant j indice k et exposant rien indice l et exposant rien")?;
+    test_prefs("fr", "SimpleSpeak", vec![("Verbosity", "Medium")], expr, "r majuscule avec 4 postscripts, indice i et exposant rien indice rien et exposant j indice k et exposant rien indice l et exposant rien")?;
             Ok(())
 }
 
@@ -129,7 +129,7 @@ fn huge_num_mmultiscripts() -> Result<()> {
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("fr", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr, 
-    "r majuscule avec 4 préscripts, pré-indice i majuscule, pré-exposant j majuscule et préscripts alternés k majuscule none l majuscule none fin préscripts et avec 5 postscripts, indice i exposant j indice k indice l et scripts alternés m none fin scripts")?;
+    "r majuscule avec 4 préscripts, pré-indice i majuscule et pré-exposant rien, pré-indice rien et pré-exposant j majuscule, pré-indice k majuscule et pré-exposant rien, pré-indice l majuscule et pré-exposant rien et avec 5 postscripts, indice i et exposant rien indice rien et exposant j indice k et exposant rien indice l et exposant rien indice m et exposant rien")?;
             Ok(())
 }
 
@@ -449,7 +449,7 @@ fn literal_speak_perpendicular() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("fr", "LiteralSpeak", expr, "a majuscule flèche vers la droite, perpendiculaire à, b majuscule flèche vers la droite")?;
+  test("fr", "LiteralSpeak", expr, "a majuscule flèche vers la droite, est taquet vers le haut, b majuscule flèche vers la droite")?;
   Ok(())
 }
 
@@ -531,7 +531,7 @@ fn literal_intent_property() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("fr", "SimpleSpeak", expr, "a majuscule flèche vers la droite, perpendiculaire à, b majuscule flèche vers la droite")?;
+  test("fr", "SimpleSpeak", expr, "a majuscule flèche vers la droite, est taquet vers le haut, b majuscule flèche vers la droite")?;
   Ok(())
 }
 

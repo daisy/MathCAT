@@ -154,23 +154,27 @@
       then: [T: "根号終了"] # phrase("root of x 'end root symbol'")
 
 
-- name: simple-sub
+- name: simple-sub   # audit-ignore: Japanese says の 2 乗 right after the base of a power, so a subscripted base ends without a pause
   tag: indexed-by
   # invisible comma -- want "x 1 when subscript is an integer"
   match: "count(*)=2 and $Verbosity='Terse' and *[2][self::m:mn and translate(., '.,', '')=.]"
   replace:
   - x: "*[1]"
   - x: "*[2]"
-  - pause: short
+  - test:
+      if: "not(parent::m:power and not(preceding-sibling::*))"   # no pause before the の 2 乗 of a power
+      then: [pause: short]
 
-- name: no-end-sub
+- name: no-end-sub   # audit-ignore: Japanese says の 2 乗 right after the base of a power, so a subscripted base ends without a pause
   tag: indexed-by
   match: "count(*)=2 and *[2][self::m:mrow and *[2][.='⁣']]"
   replace:
   - x: "*[1]"
   - T: "下付き"               # phrase(x 'sub' 2)
   - x: "*[2]"
-  - pause: short
+  - test:
+      if: "not(parent::m:power and not(preceding-sibling::*))"   # no pause before the の 2 乗 of a power
+      then: [pause: short]
 
 - name: power-indexed-by
   tag: power-indexed-by
@@ -272,10 +276,9 @@
   - T: "上"        # phrase(x modified with y 'above' it)
 
 - name: default
-  #   Here we support up to 2 prescripts and up to 4 postscripts -- that should cover all reasonable cases
-  #   If there are more, we just dump them out without regard to sup/super :-(
-  # FIX: this could use more special cases 
-  # There is (currently) no way in MathCAT to deal with n-ary arguments other than "all" ('*') or an individual entry ('*[1]').
+  # Arbitrary numbers of pre-/post-scripts via the special `mmultiscripts:` replacement (issue #234).
+  # For each pair, $Subscript / $Superscript / $ScriptIndex (1-based) are set.
+  # process-order is required: speech uses [base, prescripts, postscripts]; most braille uses [prescripts, base, postscripts].
   tag: mmultiscripts
   match: "."
   variables:
@@ -284,68 +287,47 @@
   - NumChildren: "count(*)" # need to stash this since the count is wrong inside '*[...]' below
   - Postscripts: "*[position()>1 and position() < (last() + ($NumChildren mod 2) -count($Prescripts))]"
   replace:
-  - x: "*[1]"
-  - test:
-      if: "$Prescripts" # more common case
-      then:
-      - with:
-          variables:
-          - PreSubscript: "IfThenElse($Verbosity='Verbose', '前置きの下付き文字', '前置きの下付き')"
-          - PreSuperscript: "IfThenElse($Verbosity='Verbose', '前置きの上付き文字', '前置きの上付き')"
-          replace:
-          - test: # only bother announcing if there is more than one prescript
+  - with:
+      variables:
+      - PreSubscript: "IfThenElse($Verbosity='Verbose', '前置きの下付き文字', '前置きの下付き')"
+      - PreSuperscript: "IfThenElse($Verbosity='Verbose', '前置きの上付き文字', '前置きの上付き')"
+      - PostSubscript: "IfThenElse($Verbosity='Verbose', '下付き文字', '下付き')"
+      - PostSuperscript: "IfThenElse($Verbosity='Verbose', '上付き文字', '上付き')"
+      replace:
+      - mmultiscripts:
+          process-order: [base, prescripts, postscripts]
+          base:
+          - x: "*[1]"
+          - test: # only bother announcing if there is more than one prescript pair
               if: "count($Prescripts) > 2"
               then:
               - x: "count($Prescripts) div 2"
               - T: "個の前置き添字"      # phrase(in this equation certain 'prescripts' apply)
               - T: "付き"      # phrase(substitute x 'with' y)
               - pause: short
+          prescript-sub:
           - test:
-              if: "not($Prescripts[1][self::m:none])"
+              if: "not($Subscript[self::m:none])"
               then:
               - x: "$PreSubscript"
-              - x: "$Prescripts[1]"
+              - x: "$Subscript"
+          prescript-super:
           - test:
-              if: "not($Prescripts[1][self::m:none] or $Prescripts[2][self::m:none])"
+              if: "not($Subscript[self::m:none] or $Superscript[self::m:none])"
               then: [T: "および"]      # phrase(10 is greater than 8 'and' less than 15)
           - test:
-              if: "not($Prescripts[2][self::m:none])"
+              if: "not($Superscript[self::m:none])"
               then:
               - x: "$PreSuperscript"
-              - x: "$Prescripts[2]"
-          - pause: short
+              - x: "$Superscript"
           - test:
-              if: "count($Prescripts) > 2" # more common case
-              then:
-              - test:
-                  if: "not($Prescripts[3][self::m:none])"
-                  then:
-                  - x: "$PreSubscript"
-                  - x: "$Prescripts[3]"
-              - test:
-                  if: "not($Prescripts[3][self::m:none] or $Prescripts[4][self::m:none])"
-                  then: [T: "および"]      # phrase(10 is grater than 8 'and' less than 15)
-              - test:
-                  if: "not($Prescripts[4][self::m:none])"
-                  then:
-                  - x: "$PreSuperscript"
-                  - x: "$Prescripts[4]"
-              - test:
-                  if: "count($Prescripts) > 4" # give up and just dump them out so at least the content is there
-                  then:
-                  - T: "および交互の前置き添字"      # phrase(in this case there are values 'and alternating prescripts')
-                  - x: "$Prescripts[position() > 4]"
-                  - T: "前置き添字終了"      # phrase(This is where 'end prescripts' occurs)
-  - test:
-      if: "$Postscripts"
-      then:
-      - with:
-          variables:
-          - PostSubscript: "IfThenElse($Verbosity='Verbose', '下付き文字', '下付き')"
-          - PostSuperscript: "IfThenElse($Verbosity='Verbose', '上付き文字', '上付き')"
-          replace:
-          - test: # only bother announcing if there is more than one postscript
-              if: "count($Postscripts) > 2"
+              # Pause after each pair except the last when there are multiple pairs;
+              # always pause after a single pair (matches prior default rule).
+              if: "count($Prescripts) <= 2 or $ScriptIndex < count($Prescripts) div 2"
+              then: [pause: short]
+          postscript-sub:
+          - test: # announce once before the first postscript pair when there is more than one pair
+              if: "$ScriptIndex=1 and count($Postscripts) > 2"
               then:
               - test:
                   if: "$Prescripts"
@@ -355,72 +337,19 @@
               - T: "付き"      # phrase(substitute x 'with' y)
               - pause: short
           - test:
-              if: "not($Postscripts[1][self::m:none])"
+              if: "not($Subscript[self::m:none])"
               then:
               - x: "$PostSubscript"
-              - x: "$Postscripts[1]"
+              - x: "$Subscript"
+          postscript-super:
           - test:
-              if: "not($Postscripts[1][self::m:none] or $Postscripts[2][self::m:none])"
+              if: "not($Subscript[self::m:none] or $Superscript[self::m:none])"
               then: [T: "および"]      # phrase(10 is greater than 8 'and' less than 15)
           - test:
-              if: "not($Postscripts[2][self::m:none])"
+              if: "not($Superscript[self::m:none])"
               then:
               - x: "$PostSuperscript"
-              - x: "$Postscripts[2]"
-          - test:
-              if: "count($Postscripts) > 2"
-              then:
-              - test:
-                  if: "not($Postscripts[3][self::m:none])"
-                  then:
-                  - x: "$PostSubscript"
-                  - x: "$Postscripts[3]"
-              - test:
-                  if: "not($Postscripts[3][self::m:none] or $Postscripts[4][self::m:none])"
-                  then: [T: "および"]      # phrase(10 is greater than 8 'and' less than 15)
-              - test:
-                  if: "not($Postscripts[4][self::m:none])"
-                  then:
-                  - x: "$PostSuperscript"
-                  - x: "$Postscripts[4]"
-              - test:
-                  if: "count($Postscripts) > 4"
-                  then:
-                  - test:
-                      if: "not($Postscripts[5][self::m:none])"
-                      then:
-                      - x: "$PostSubscript"
-                      - x: "$Postscripts[5]"
-                  - test:
-                      if: "not($Postscripts[5][self::m:none] or $Postscripts[6][self::m:none])"
-                      then: [T: "および"]      # phrase(10 is greater than 8 'and' less than 15)
-                  - test:
-                      if: "not($Postscripts[6][self::m:none])"
-                      then:
-                      - x: "$PostSuperscript"
-                      - x: "$Postscripts[6]"
-                  - test:
-                      if: "count($Postscripts) > 6"
-                      then:
-                      - test:
-                          if: "not($Postscripts[7][self::m:none])"
-                          then:
-                          - x: "$PostSubscript"
-                          - x: "$Postscripts[7]"
-                      - test:
-                          if: "not($Postscripts[7][self::m:none] or $Postscripts[8][self::m:none])"
-                          then: [T: "および"]      # phrase(10 is less than 15 'and' greater than 5)
-                      - test:
-                          if: "not($Postscripts[8][self::m:none])"
-                          then:
-                          - x: "$PostSuperscript"
-                          - x: "$Postscripts[8]"
-                      - test:
-                          if: "count($Postscripts) > 8" # give up and just dump them out so at least the content is there
-                          then:
-                          - T: "および交互の添字"      # phrase(this situation involves complexities 'and alternating scripts')
-                          - x: "$Postscripts[position() > 8]"
-                          - T: "添字終了"      # phrase(At this point 'end scripts' occurs)
+              - x: "$Superscript"
 
 - name: default
   tag: [mtable, array]
@@ -518,7 +447,7 @@
       then: [T: "四角", pause: short]      # phrase(the 'box' around the expression)
   - test:
       if: ".[contains(@notation,'roundedbox')]"
-      then: [T: "角丸の四角", pause: short]      # phrase(the 'round box' around the expression)
+      then: [T: "かど丸の四角", pause: short]      # phrase(the 'round box' around the expression)
   - test:
       if: ".[contains(@notation,'circle')]"
       then: [T: "円", pause: short]      # phrase(the 'circle' around the expression)
@@ -661,6 +590,15 @@
   replace:
   - x: "SpeakIntentName(name(.), $Verbosity, 'nofix')"
 
+- name: logarithm-with-base-before-argument
+  # log_b x is read ログ b の x (の comes from U+2061). The pause that prefix-intent adds after
+  # the base would split ログ b from its の, so it is left out when the base is simple.
+  tag: logarithm-with-base
+  match: "count(*)=1 and IsNode(*[1], 'simple') and following-sibling::*[1][.='\u2061']"
+  replace:
+  - x: "SpeakIntentName(name(.), $Verbosity, 'prefix')"
+  - x: "*[1]"
+
 - name: prefix-intent
   # uncaught intent -- the args have been inserted in the order of speech 
   tag: "*"
@@ -687,7 +625,7 @@
   - x: "*"
   - x: "SpeakIntentName(name(.), $Verbosity, 'postfix')"
 
-- name: infix-intent
+- name: infix-intent   # audit-ignore: Japanese says の 2 乗 right after the base of a power, so a subscripted base ends without a pause
   # uncaught intent -- the args have been inserted in the order of speech 
   tag: "*"
   match: "count(*)>0 and contains(@data-intent-property, ':infix:')"
@@ -709,9 +647,13 @@
       if: "$Impairment = 'Blindness' and not( IsBracketed(., '', '') or IsNode(*[last()], 'simple') )"
       then: [x: "GetBracketingIntentName(name(.), $Verbosity, 'infix', 'end')"]
   - test:
-      if: "IsNode(., '2D')"   # add (probably) a slightly longer pause if this came from a 2D node
-      then: [pause: short]
-      else: [pause: auto]
+      # x 下付き 1 の 2 乗: a pause here would split the subscript from the の 2 乗 that the power rule says next
+      if: "not(name(.)='indexed-by' and parent::m:power and not(preceding-sibling::*))"
+      then:
+      - test:
+          if: "IsNode(., '2D')"   # add (probably) a slightly longer pause if this came from a 2D node
+          then: [pause: short]
+          else: [pause: auto]
 
 - name: function-intent
   # uncaught intent -- speak as foo of arg1 comma arg2 ....
@@ -756,9 +698,17 @@
       else: [pause: auto]
 
 
-- name: default-text
+- name: default-text   # audit-ignore: ja speaks a leaf intent with its IntentMappings word, not the English name
   # unknown leaf -- just speak the text -- could be a literal intent
+  # A leaf intent such as <mo intent='plus'> ends up here. Speak the word in its first
+  # IntentMappings entry; SpeakIntentName falls back to the name, with - and _ as spaces,
+  # when the name is not in IntentMappings.
   tag: "*"
   match: "."
   replace:
-  - x: "translate(name(), '-_', ' ')"
+  - test:
+      # Under :literal:, speak the character so unicode.yaml/unicode-full.yaml apply
+      # (e.g. ⊥ → LiteralSpeak unicode), not the intent element name.
+      if: "ancestor-or-self::*[contains(@data-intent-property, ':literal:')] and string-length(text()) > 0"
+      then: [x: "text()"]
+      else: [x: "SpeakIntentName(name(.), $Verbosity, '')"]

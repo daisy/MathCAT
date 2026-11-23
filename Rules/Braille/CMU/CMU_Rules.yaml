@@ -764,9 +764,10 @@
      then: [t: "⠄"]
 
 -
-  # This is incredibly messy because it needs to handle all the special cases for scripts, and then repeat them for each pre/postscript
-  # Note: the rules for figuring out the order are in 4.4.1
-  # In particular, some post superscripts like "'" come before the prescripts. This probably only makes sense if they are the first postscript
+  # Arbitrary numbers of pre-/post-scripts via mmultiscripts: (issue #234).
+  # Note: CMU 4.4.1 puts some first post-superscripts (primes, quotes, degree, signs) after the base
+  # and before the prescripts -- emit those from base and suppress them in postscript-super.
+  # process-order is [base, prescripts, postscripts] (unlike most braille, which put prescripts first).
   # FIX: I have very little confidence this is correct when there is more than one prescript or more than one postscript
   name: default
   tag: mmultiscripts
@@ -776,332 +777,144 @@
   - Prescripts: "m:mprescripts/following-sibling::*"
   - NumChildren: "count(*)"       # need to stash this since the count is wrong inside '*[...]' below
   - Postscripts: "*[position()>1 and position() < (last() + ($NumChildren mod 2) -count($Prescripts))]"
+  # 4.4.1 early first post-superscript (comes before the prescripts)
+  - EarlyFirstPostSuper: "$Postscripts and not($Postscripts[2][self::m:none]) and $Postscripts[2][translate(., \"′″‴⁗'*`+-´°‘’“”‟‵‶‷\",'')='']"
   replace:
-  - x: "*[1]"
-  - test: # special case superscript postscripts that preceed the prescripts
-      if: "$Postscripts and not($Postscripts[2][self::m:none]) and $Postscripts[2][translate(., \"′″‴⁗'*`+-´°‘’“”‟‵‶‷\",'')='']"
-      then:
-      - x: "$Postscripts[2]"
+  - mmultiscripts:
+      process-order: [base, prescripts, postscripts]
+      base:
+      - x: "*[1]"
+      - test: # special case superscript postscripts that precede the prescripts
+          if: "$EarlyFirstPostSuper"
+          then:
+          - x: "$Postscripts[2]"
+          - test:
+              # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
+              if: "translate($Postscripts[2], \"′″‴⁗\", '')!='' and not($Postscripts[2][.='°'] and *[1][self::m:mn or @data-chem-element])"
+              then: [t: "⠄"]
+      prescript-sub:
       - test:
-          # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
-          if: "translate($Postscripts[2], \"′″‴⁗\", '')!='' and not($Postscripts[2][.='°'] and *[1][self::m:mn or @data-chem-element])" 
-          then: [t: "⠄"]
-  - test:
-      if: "$Prescripts"
-      then:
-      - test:
-          if: "not($Prescripts[1][self::m:none])"
+          if: "not($Subscript[self::m:none])"
           then:
           - t: "⠠⠌"
           - test:
               - if:
-                - "$Prescripts[1][self::m:mrow[not(./*[name() != 'mo'])]] and" # script consists of all mo's
-                - "count($Prescripts[1]/*) > 3 and string-length($Prescripts[1]/*[1])=1 and"    # at least four mo's, the first of which has a single char
-                - "$Prescripts[1][ not(./*[text()] != *[1][text()]) ]" # they are all have the same text (we know it is an mrow)
+                - "$Subscript[self::m:mrow[not(./*[name() != 'mo'])]] and" # script consists of all mo's
+                - "count($Subscript/*) > 3 and string-length($Subscript/*[1])=1 and"    # at least four mo's, the first of which has a single char
+                - "$Subscript[ not(./*[text()] != *[1][text()]) ]" # they are all have the same text (we know it is an mrow)
                 then:
-                - x: "BrailleChars(count($Prescripts[1]/*), 'CMU')"
-                - x: "$Prescripts[1]/*[1]"
+                - x: "BrailleChars(count($Subscript/*), 'CMU')"
+                - x: "$Subscript/*[1]"
                 - test:
-                    # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
-                    if: "not($Prescripts[1][.='°'] and *[1][self::m:mn or @data-chem-element])" 
+                    if: "not($Subscript[.='°'] and *[1][self::m:mn or @data-chem-element])"
                     then: [t: "⠄"]
-              - else_if: "$Prescripts[1][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
+              - else_if: "$Subscript[translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
                 then:
-                - x: "$Prescripts[1]"
+                - x: "$Subscript"
                 - test:
-                    # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
-                    if: "not($Prescripts[1][.='°'] and *[1][self::m:mn or @data-chem-element])" 
+                    if: "not($Subscript[.='°'] and *[1][self::m:mn or @data-chem-element])"
                     then: [t: "⠄"]
-              - else_if: "$Prescripts[1][((self::m:mrow and not(IsBracketed(., '', '')) and not(*[1][self::m:mo][.='-'])) or IsNode(., 'modified')) or self::m:mfrac]"
+              - else_if: "$Subscript[((self::m:mrow and not(IsBracketed(., '', '')) and not(*[1][self::m:mo][.='-'])) or IsNode(., 'modified')) or self::m:mfrac]"
                 then:
                 - t: "⠢"
-                - x: "$Prescripts[1]"
+                - x: "$Subscript"
                 - t: "⠔"
                 else:
-                - x: "$Prescripts[1]"
+                - x: "$Subscript"
+      prescript-super:
       - test:
-          if: "not($Prescripts[2][self::m:none])"
+          if: "not($Superscript[self::m:none])"
           then:
           - t: "⠈⠡"
           - test:
               - if:
-                - "$Prescripts[2][self::m:mrow[not(./*[name() != 'mo'])]] and" # script consists of all mo's
-                - "count($Prescripts[2]/*) > 3 and string-length($Prescripts[2]/*[1])=1 and"    # at least four mo's, the first of which has a single char
-                - "$Prescripts[2][ not(./*[text()] != *[1][text()]) ]" # they are all have the same text (we know it is an mrow)
+                - "$Superscript[self::m:mrow[not(./*[name() != 'mo'])]] and"
+                - "count($Superscript/*) > 3 and string-length($Superscript/*[1])=1 and"
+                - "$Superscript[ not(./*[text()] != *[1][text()]) ]"
                 then:
-                - x: "BrailleChars(count($Prescripts[2]/*), 'CMU')"
-                - x: "$Prescripts[2]/*[1]"
+                - x: "BrailleChars(count($Superscript/*), 'CMU')"
+                - x: "$Superscript/*[1]"
                 - test:
-                    # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
-                    if: "not($Prescripts[2][.='°'] and *[1][self::m:mn or @data-chem-element])" 
+                    if: "not($Superscript[.='°'] and *[1][self::m:mn or @data-chem-element])"
                     then: [t: "⠄"]
-              - else_if: "$Prescripts[2][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
+              - else_if: "$Superscript[translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
                 then:
-                - x: "$Prescripts[2]"
+                - x: "$Superscript"
                 - test:
-                    # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
-                    if: "not($Prescripts[2][.='°'] and *[1][self::m:mn or @data-chem-element])" 
+                    if: "not($Superscript[.='°'] and *[1][self::m:mn or @data-chem-element])"
                     then: [t: "⠄"]
-              - else_if: "$Prescripts[2][((self::m:mrow and not(IsBracketed(., '', '')) and not(*[1][self::m:mo][.='-'])) or IsNode(., 'modified')) or self::m:mfrac]"
+              - else_if: "$Superscript[((self::m:mrow and not(IsBracketed(., '', '')) and not(*[1][self::m:mo][.='-'])) or IsNode(., 'modified')) or self::m:mfrac]"
                 then:
                 - t: "⠢"
-                - x: "$Prescripts[2]"
+                - x: "$Superscript"
                 - t: "⠔"
                 else:
-                - x: "$Prescripts[2]"
+                - x: "$Superscript"
+      postscript-sub:
       - test:
-          if: "count($Prescripts)>2"
+          if: "not($Subscript[self::m:none])"
           then:
           - test:
-              if: "not($Prescripts[3][self::m:none])"
-              then:
-              - t: "⠠⠌"
-              - test:
-                  - if:
-                    - "$Prescripts[3][self::m:mrow[not(./*[name() != 'mo'])]] and" # script consists of all mo's
-                    - "count($Prescripts[3]/*) > 3 and string-length($Prescripts[3]/*[1])=1 and"    # at least four mo's, the first of which has a single char
-                    - "$Prescripts[3][ not(./*[text()] != *[1][text()]) ]" # they are all have the same text (we know it is an mrow)
-                    then:
-                    - x: "BrailleChars(count($Prescripts[3]/*), 'CMU')"
-                    - x: "$Prescripts[3]/*[1]"
-                    - test:
-                        # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
-                        if: "not($Prescripts[3][.='°'] and *[1][self::m:mn or @data-chem-element])" 
-                        then: [t: "⠄"]
-                  - else_if: "$Prescripts[3][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
-                    then:
-                    - x: "$Prescripts[3]"
-                    - test:
-                        # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
-                        if: "not($Prescripts[3][.='°'] and *[1][self::m:mn or @data-chem-element])" 
-                        then: [t: "⠄"]
-                  - else_if: "$Prescripts[3][((self::m:mrow and not(IsBracketed(., '', '')) and not(*[1][self::m:mo][.='-'])) or IsNode(., 'modified')) or self::m:mfrac]"
-                    then:
-                    - t: "⠢"
-                    - x: "$Prescripts[3]"
-                    - t: "⠔"
-                    else:
-                    - x: "$Prescripts[3]"
-          - test:
-              if: "not($Prescripts[4][self::m:none])"
-              then:
-              - t: "⠈⠡"
-              - test:
-                  - if:
-                    - "$Prescripts[4][self::m:mrow[not(./*[name() != 'mo'])]] and" # script consists of all mo's
-                    - "count($Prescripts[4]/*) > 3 and string-length($Prescripts[4]/*[1])=1 and"    # at least four mo's, the first of which has a single char
-                    - "$Prescripts[4][ not(./*[text()] != *[1][text()]) ]" # they are all have the same text (we know it is an mrow)
-                    then:
-                    - x: "BrailleChars(count($Prescripts[4]/*), 'CMU')"
-                    - x: "$Prescripts[4]/*[1]"
-                    - test:
-                        # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
-                        if: "not($Prescripts[4][.='°'] and *[1][self::m:mn or @data-chem-element])" 
-                        then: [t: "⠄"]
-                  - else_if: "$Prescripts[4][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
-                    then:
-                    - x: "$Prescripts[4]"
-                    - test:
-                        # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
-                        if: "not($Prescripts[4][.='°'] and *[1][self::m:mn or @data-chem-element])" 
-                        then: [t: "⠄"]
-                  - else_if: "$Prescripts[4][((self::m:mrow and not(IsBracketed(., '', '')) and not(*[1][self::m:mo][.='-'])) or IsNode(., 'modified')) or self::m:mfrac]"
-                    then:
-                    - t: "⠢"
-                    - x: "$Prescripts[4]"
-                    - t: "⠔"
-                    else:
-                    - x: "$Prescripts[4]"
-          - test:
-              if: "count($Prescripts) > 4"   # give up and just dump them out so at least the content is there
-              then: [x: "$Prescripts[position() > 4]"]
-
-  - test:
-      if: "$Postscripts"
-      then:
-      - test:
-          if: "not($Postscripts[1][self::m:none])"
-          then:
-          - t: "⠌"
+              if: "$ScriptIndex=1"
+              then: [t: "⠌"]
+              else: [t: "⠰⠌"]
           - test:
               - if:
-                - "$Postscripts[1][self::m:mrow[not(./*[name() != 'mo'])]] and" # script consists of all mo's
-                - "count($Postscripts[1]/*) > 3 and string-length($Postscripts[1]/*[1])=1 and"    # at least four mo's, the first of which has a single char
-                - "$Postscripts[1][ not(./*[text()] != *[1][text()]) ]" # they are all have the same text (we know it is an mrow)
+                - "$Subscript[self::m:mrow[not(./*[name() != 'mo'])]] and"
+                - "count($Subscript/*) > 3 and string-length($Subscript/*[1])=1 and"
+                - "$Subscript[ not(./*[text()] != *[1][text()]) ]"
                 then:
-                - x: "BrailleChars(count($Postscripts[1]/*), 'CMU')"
-                - x: "$Postscripts[1]/*[1]"
+                - x: "BrailleChars(count($Subscript/*), 'CMU')"
+                - x: "$Subscript/*[1]"
                 - test:
-                    # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
-                    if: "not($Postscripts[1][.='°'] and *[1][self::m:mn or @data-chem-element])" 
+                    if: "not($Subscript[.='°'] and *[1][self::m:mn or @data-chem-element])"
                     then: [t: "⠄"]
-              - else_if: "$Postscripts[1][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
+              - else_if: "$Subscript[translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
                 then:
-                - x: "$Postscripts[1]"
+                - x: "$Subscript"
                 - test:
-                    # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
-                    if: "not($Postscripts[1][.='°'] and *[1][self::m:mn or @data-chem-element])" 
+                    if: "not($Subscript[.='°'] and *[1][self::m:mn or @data-chem-element])"
                     then: [t: "⠄"]
-              - else_if: "$Postscripts[1][((self::m:mrow and not(IsBracketed(., '', '')) and not(*[1][self::m:mo][.='-'])) or IsNode(., 'modified')) or self::m:mfrac]"
+              - else_if: "$Subscript[((self::m:mrow and not(IsBracketed(., '', '')) and not(*[1][self::m:mo][.='-'])) or IsNode(., 'modified')) or self::m:mfrac]"
                 then:
                 - t: "⠢"
-                - x: "$Postscripts[1]"
+                - x: "$Subscript"
                 - t: "⠔"
                 else:
-                - x: "$Postscripts[1]"
+                - x: "$Subscript"
+      postscript-super:
+      # Suppress when already emitted early from base (4.4.1).
       - test:
-          if: "not($Postscripts[2][self::m:none]) and $Postscripts[2][translate(., \"′″‴⁗'*`+-´°‘’“”‟‵‶‷\",'')!='']"
+          if: "not($ScriptIndex=1 and $EarlyFirstPostSuper) and not($Superscript[self::m:none])"
           then:
-          - t: "⠡"
+          - test:
+              if: "$ScriptIndex=1"
+              then: [t: "⠡"]
+              else: [t: "⠘⠡"]
           - test:
               - if:
-                - "$Postscripts[2][self::m:mrow[not(./*[name() != 'mo'])]] and" # script consists of all mo's
-                - "count($Postscripts[2]/*) > 3 and string-length($Postscripts[2]/*[1])=1 and"    # at least four mo's, the first of which has a single char
-                - "$Postscripts[2][ not(./*[text()] != *[1][text()]) ]" # they are all have the same text (we know it is an mrow)
+                - "$Superscript[self::m:mrow[not(./*[name() != 'mo'])]] and"
+                - "count($Superscript/*) > 3 and string-length($Superscript/*[1])=1 and"
+                - "$Superscript[ not(./*[text()] != *[1][text()]) ]"
                 then:
-                - x: "BrailleChars(count($Postscripts[2]/*), 'CMU')"
-                - x: "$Postscripts[2]/*[1]"
+                - x: "BrailleChars(count($Superscript/*), 'CMU')"
+                - x: "$Superscript/*[1]"
                 - test:
-                    # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
-                    if: "not($Postscripts[2][.='°'] and *[1][self::m:mn or @data-chem-element])" 
+                    if: "not($Superscript[.='°'] and *[1][self::m:mn or @data-chem-element])"
                     then: [t: "⠄"]
-              - else_if: "$Postscripts[2][((self::m:mrow and not(IsBracketed(., '', '')) and not(*[1][self::m:mo][.='-'])) or IsNode(., 'modified')) or self::m:mfrac]"
+              - else_if: "$ScriptIndex > 1 and $Superscript[translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
+                then:
+                - x: "$Superscript"
+                - test:
+                    if: "not($Superscript[.='°'] and *[1][self::m:mn or @data-chem-element])"
+                    then: [t: "⠄"]
+              - else_if: "$Superscript[((self::m:mrow and not(IsBracketed(., '', '')) and not(*[1][self::m:mo][.='-'])) or IsNode(., 'modified')) or self::m:mfrac]"
                 then:
                 - t: "⠢"
-                - x: "$Postscripts[2]"
+                - x: "$Superscript"
                 - t: "⠔"
                 else:
-                - x: "$Postscripts[2]"
-      - test:
-          if: "count($Postscripts)>2"
-          then:
-          - test:
-              if: "not($Postscripts[3][self::m:none])"
-              then:
-              - t: "⠰⠌"
-              - test:
-                  - if:
-                    - "$Postscripts[3][self::m:mrow[not(./*[name() != 'mo'])]] and" # script consists of all mo's
-                    - "count($Postscripts[3]/*) > 3 and string-length($Postscripts[3]/*[1])=1 and"    # at least four mo's, the first of which has a single char
-                    - "$Postscripts[3][ not(./*[text()] != *[1][text()]) ]" # they are all have the same text (we know it is an mrow)
-                    then:
-                    - x: "BrailleChars(count($Postscripts[3]/*), 'CMU')"
-                    - x: "$Postscripts[3]/*[1]"
-                    - test:
-                        # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
-                        if: "not($Postscripts[3][.='°'] and *[1][self::m:mn or @data-chem-element])" 
-                        then: [t: "⠄"]
-                  - else_if: "$Postscripts[3][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
-                    then:
-                    - x: "$Postscripts[3]"
-                    - test:
-                        # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
-                        if: "not($Postscripts[3][.='°'] and *[1][self::m:mn or @data-chem-element])" 
-                        then: [t: "⠄"]
-                  - else_if: "$Postscripts[3][((self::m:mrow and not(IsBracketed(., '', '')) and not(*[1][self::m:mo][.='-'])) or IsNode(., 'modified')) or self::m:mfrac]"
-                    then:
-                    - t: "⠢"
-                    - x: "$Postscripts[3]"
-                    - t: "⠔"
-                    else:
-                    - x: "$Postscripts[3]"
-          - test:
-              if: "not($Postscripts[4][self::m:none])"
-              then:
-              - t: "⠘⠡"
-              - test:
-                  - if:
-                    - "$Postscripts[4][self::m:mrow[not(./*[name() != 'mo'])]] and" # script consists of all mo's
-                    - "count($Postscripts[4]/*) > 3 and string-length($Postscripts[4]/*[1])=1 and"    # at least four mo's, the first of which has a single char
-                    - "$Postscripts[4][ not(./*[text()] != *[1][text()]) ]" # they are all have the same text (we know it is an mrow)
-                    then:
-                    - x: "BrailleChars(count($Postscripts[4]/*), 'CMU')"
-                    - x: "$Postscripts[4]/*[1]"
-                    - test:
-                        # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
-                        if: "not($Postscripts[4][.='°'] and *[1][self::m:mn or @data-chem-element])" 
-                        then: [t: "⠄"]
-                  - else_if: "$Postscripts[4][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
-                    then:
-                    - x: "$Postscripts[4]"
-                    - test:
-                        # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
-                        if: "not($Postscripts[4][.='°'] and *[1][self::m:mn or @data-chem-element])" 
-                        then: [t: "⠄"]
-                  - else_if: "$Postscripts[4][((self::m:mrow and not(IsBracketed(., '', '')) and not(*[1][self::m:mo][.='-'])) or IsNode(., 'modified')) or self::m:mfrac]"
-                    then:
-                    - t: "⠢"
-                    - x: "$Postscripts[4]"
-                    - t: "⠔"
-                    else:
-                    - x: "$Postscripts[4]"
-          - test:
-              if: "count($Postscripts)>4"
-              then:
-              - test:
-                  if: "not($Postscripts[5][self::m:none])"
-                  then:
-                  - t: "⠰⠌"
-                  - test:
-                      - if:
-                        - "$Postscripts[5][self::m:mrow[not(./*[name() != 'mo'])]] and" # script consists of all mo's
-                        - "count($Postscripts[5]/*) > 3 and string-length($Postscripts[5]/*[1])=1 and"    # at least four mo's, the first of which has a single char
-                        - "$Postscripts[5][ not(./*[text()] != *[1][text()]) ]" # they are all have the same text (we know it is an mrow)
-                        then:
-                        - x: "BrailleChars(count($Postscripts[5]/*), 'CMU')"
-                        - x: "$Postscripts[5]/*[1]"
-                        - test:
-                            # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
-                            if: "not($Postscripts[5][.='°'] and *[1][self::m:mn or @data-chem-element])" 
-                            then: [t: "⠄"]
-                      - else_if: "$Postscripts[5][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
-                        then:
-                        - x: "$Postscripts[5]"
-                        - test:
-                            # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
-                            if: "not($Postscripts[5][.='°'] and *[1][self::m:mn or @data-chem-element])" 
-                            then: [t: "⠄"]
-                      - else_if: "$Postscripts[5][((self::m:mrow and not(IsBracketed(., '', '')) and not(*[1][self::m:mo][.='-'])) or IsNode(., 'modified')) or self::m:mfrac]"
-                        then:
-                        - t: "⠢"
-                        - x: "$Postscripts[5]"
-                        - t: "⠔"
-                        else:
-                        - x: "$Postscripts[5]"
-              - test:
-                  if: "not($Postscripts[6][self::m:none])"
-                  then:
-                  - t: "⠘⠡"
-                  - test:
-                      - if:
-                        - "$Postscripts[6][self::m:mrow[not(./*[name() != 'mo'])]] and" # script consists of all mo's
-                        - "count($Postscripts[6]/*) > 3 and string-length($Postscripts[6]/*[1])=1 and"    # at least four mo's, the first of which has a single char
-                        - "$Postscripts[6][ not(./*[text()] != *[1][text()]) ]" # they are all have the same text (we know it is an mrow)
-                        then:
-                        - x: "BrailleChars(count($Postscripts[6]/*), 'CMU')"
-                        - x: "$Postscripts[6]/*[1]"
-                        - test:
-                            # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
-                            if: "not($Postscripts[6][.='°'] and *[1][self::m:mn or @data-chem-element])" 
-                            then: [t: "⠄"]
-                      - else_if: "$Postscripts[6][translate(., \"'*`+-´°‘’“”‟‵‶‷\",'')='']"
-                        then:
-                        - x: "$Postscripts[6]"
-                        - test:
-                            # degree doesn't use dot-3 for chemistry, temp, angles -- can't know that so we make a wild guess here
-                            if: "not($Postscripts[6][.='°'] and *[1][self::m:mn or @data-chem-element])" 
-                            then: [t: "⠄"]
-                      - else_if: "$Postscripts[6][((self::m:mrow and not(IsBracketed(., '', '')) and not(*[1][self::m:mo][.='-'])) or IsNode(., 'modified')) or self::m:mfrac]"
-                        then:
-                        - t: "⠢"
-                        - x: "$Postscripts[6]"
-                        - t: "⠔"
-                        else:
-                        - x: "$Postscripts[6]"
-              - test:
-                  if: "count($Postscripts) > 6"   # give up and just dump them out so at least the content is there
-                  then: [x: "$Postscripts[position() > 6]"]
-                  
+                - x: "$Superscript"
 
 -
 # Note: @notation can contain more than one value

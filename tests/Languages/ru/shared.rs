@@ -145,9 +145,9 @@ fn tensor_mmultiscripts() -> Result<()> {
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "заглавная эр с 4 индексами после, нижний индекс и верхний индекс йот нижний индекс ка нижний индекс эль")?;
+            "заглавная эр с 4 индексами после, нижний индекс и и верхний индекс нет нижний индекс нет и верхний индекс йот нижний индекс ка и верхний индекс нет нижний индекс эль и верхний индекс нет")?;
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "заглавная эр с 4 индексами после, нижний и верхний йот нижний ка нижний эль")?;
+            "заглавная эр с 4 индексами после, нижний и и верхний нет нижний нет и верхний йот нижний ка и верхний нет нижний эль и верхний нет")?;
             return Ok(());
 }
 
@@ -158,7 +158,7 @@ fn huge_num_mmultiscripts() -> Result<()> {
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("ru", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "заглавная эр с 4 индексами перед, левый нижний индекс заглавная и, левый верхний индекс заглавная йот и далее левый нижний индекс заглавная ка левый нижний индекс заглавная эль, и с 5 индексами после, нижний индекс и верхний индекс йот нижний индекс ка нижний индекс эль и далее нижний индекс эм")?;
+            "заглавная эр с 4 индексами перед, левый нижний индекс заглавная и и левый верхний индекс нет, левый нижний индекс нет и левый верхний индекс заглавная йот, левый нижний индекс заглавная ка и левый верхний индекс нет, левый нижний индекс заглавная эль и левый верхний индекс нет и с 5 индексами после, нижний индекс и и верхний индекс нет нижний индекс нет и верхний индекс йот нижний индекс ка и верхний индекс нет нижний индекс эль и верхний индекс нет нижний индекс эм и верхний индекс нет")?;
             return Ok(());
 }
 
@@ -454,7 +454,7 @@ fn literal_speak() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
@@ -513,7 +513,7 @@ fn literal_intent_property() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>

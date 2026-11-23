@@ -286,7 +286,7 @@
       - test:
           if: "$Verbosity!='Terse'"
           then: [T: ""]      # phrase('the' empty set)
-      - T: "空集合"      # phrase(when a set contains no value it is called an 'empty set' and this is valid)
+      - T: "くう集合"      # phrase(when a set contains no value it is called an 'empty set' and this is valid)
     - else_if: "count(*[1]/*)=3 and *[1]/*[2][self::m:mo][.=':' or .='|' or .='∣']"
       then:
       - test:

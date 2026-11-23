@@ -47,7 +47,8 @@ fn ordinals() -> Result<()> {
         // 1.^{\text{o}} y 1^{\text{o}}
         ("<math><mn>1</mn><msup><mo>.</mo><mtext>o</mtext></msup></math>", "primero"),
         ("<math><mn>3</mn><msup><mo>.</mo><mtext>er</mtext></msup></math>", "tercer"),
-        ("<math><msup><mn>1</mn><mtext>o</mtext></msup></math>", "primero"),
+        // sin punto no es ordinal (suele ser un grado mal escrito: 30º)
+        ("<math><mn>1</mn><mtext>º</mtext></math>", "1 ordinal masculino"),
         // dentro de una fórmula
         ("<math><msub><mi>a</mi><mrow><mn>1</mn><mtext>.o</mtext></mrow></msub><mo>+</mo><msub><mi>a</mi><mrow><mn>2</mn><mtext>.o</mtext></mrow></msub></math>",
             "a sub primero fin de sub; más, a sub segundo fin de sub"),
@@ -62,6 +63,46 @@ fn ordinals() -> Result<()> {
         test("es", "ClearSpeak", expr, speech)?;
         test("es", "SimpleSpeak", expr, speech)?;
     }
+    return Ok(());
+}
+
+#[test]
+fn limit_sup_inf() -> Result<()> {
+    // \limsup y \liminf: "límite superior/inferior" (Rules/Intent los llama limit-sup y limit-inf), con "de" como lim
+    let sup = "<math><munder><mo>lim sup</mo><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></munder><msub><mi>a</mi><mi>n</mi></msub></math>";
+    let inf = "<math><munder><mo>lim&#x2009;inf</mo><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></munder><msub><mi>a</mi><mi>n</mi></msub></math>";
+    let mi = "<math><munder><mi>limsup</mi><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></munder><msub><mi>a</mi><mi>n</mi></msub></math>";
+    test("es", "ClearSpeak", sup, "el límite superior cuando n tiende a infinito, de a sub n")?;
+    test("es", "SimpleSpeak", inf, "el límite inferior cuando n tiende a infinito, de a sub n")?;
+    test("es", "ClearSpeak", mi, "el límite superior cuando n tiende a infinito, de a sub n")?;
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], sup, "lím sup cuando n tiende a infinito; a sub n")?;
+    return Ok(());
+}
+
+#[test]
+fn min_max_with_condition() -> Result<()> {
+    // la condición va al final, como se dice: "el mínimo de f de x cuando x pertenece a A"
+    let min = "<math><munder><mo movablelimits=\"true\">min</mo><mrow><mi>x</mi><mo>∈</mo><mi>A</mi></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></math>";
+    let sup = "<math><munder><mo movablelimits=\"true\">sup</mo><mrow><mi>x</mi><mo>&gt;</mo><mn>0</mn></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></math>";
+    let plus = "<math><munder><mo movablelimits=\"true\">min</mo><mrow><mi>x</mi><mo>∈</mo><mi>A</mi></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>+</mo><mn>1</mn></math>";
+    test("es", "ClearSpeak", min, "el mínimo de f de x, cuando x pertenece a mayúscula a")?;
+    test("es", "SimpleSpeak", sup, "el supremo de f de x, cuando x es mayor que 0")?;
+    test("es", "ClearSpeak", plus, "el mínimo de f de x, cuando x pertenece a mayúscula a; más 1")?;
+    test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Terse")], min, "mín de f x, cuando x pertenece a mayúscula a")?;
+    return Ok(());
+}
+
+#[test]
+fn accented_operators_babel() -> Result<()> {
+    // babel en español escribe lím, lím sup, lím ínf, mín, máx e ínf con tilde
+    let lim = |op: &str| format!("<math><munder><mo>{op}</mo><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></munder><msub><mi>a</mi><mi>n</mi></msub></math>");
+    let op = |op: &str| format!("<math><munder><mo movablelimits=\"true\">{op}</mo><mrow><mi>x</mi><mo>∈</mo><mi>A</mi></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></math>");
+    test("es", "ClearSpeak", &lim("lím sup"), "el límite superior cuando n tiende a infinito, de a sub n")?;
+    test("es", "ClearSpeak", &lim("lím ínf"), "el límite inferior cuando n tiende a infinito, de a sub n")?;
+    test("es", "SimpleSpeak", &lim("lím&#x2009;sup"), "el límite superior cuando n tiende a infinito, de a sub n")?;
+    test("es", "ClearSpeak", &op("mín"), "el mínimo de f de x, cuando x pertenece a mayúscula a")?;
+    test("es", "SimpleSpeak", &op("máx"), "el máximo de f de x, cuando x pertenece a mayúscula a")?;
+    test("es", "ClearSpeak", &op("ínf"), "el ínfimo de f de x, cuando x pertenece a mayúscula a")?;
     return Ok(());
 }
 
@@ -126,6 +167,17 @@ fn limit_one_sided_superscript() -> Result<()> {
 
 
 #[test]
+fn composed_with() -> Result<()> {
+    // ∘: "f compuesta con g" (función, permutación, relación: femenino)
+    test("es", "ClearSpeak", "<math><mi>f</mi><mo>∘</mo><mi>g</mi></math>", "f compuesta con g")?;
+    test("es", "SimpleSpeak", "<math><mi>f</mi><mo>∘</mo><mi>g</mi><mo>∘</mo><mi>k</mi></math>", "f compuesta con g compuesta con k")?;
+    // ℎ (U+210E) es la h cursiva que llega desde LaTeX: "h", no "constante de Planck"
+    test("es", "ClearSpeak", "<math><mi>f</mi><mo>∘</mo><mi>ℎ</mi></math>", "f compuesta con h")?;
+    test("es", "ClearSpeak", "<math><mi>ℎ</mi><mo>(</mo><mi>x</mi><mo>)</mo></math>", "h de x")?;
+    return Ok(());
+}
+
+#[test]
 fn binomial_mmultiscripts() -> Result<()> {
     let expr = "<math><mmultiscripts><mi>C</mi><mi>m</mi><none/><mprescripts/><mi>n</mi><none/></mmultiscripts></math>";
     test("es", "SimpleSpeak", expr, "n sobre m")?;
@@ -179,14 +231,14 @@ fn tensor_mmultiscripts() -> Result<()> {
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "mayúscula r con 4 índices, subíndice i superíndice j subíndice k subíndice l")?;
+            "mayúscula r con 4 índices, subíndice i y superíndice nada subíndice nada y superíndice j subíndice k y superíndice nada subíndice l y superíndice nada")?;
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "mayúscula r con 4 índices, sub i superíndice j sub k sub l")?;
+            "mayúscula r con 4 índices, sub i y superíndice nada sub nada y superíndice j sub k y superíndice nada sub l y superíndice nada")?;
             return Ok(());
 
 }
 
-// REVISAR (inglés: none): «mayúscula r con 4 preíndices, presubíndice mayúscula i, presuperíndice mayúscula j y preíndices alternados mayúscula k none mayúscula l none fin de preíndices y con 5 índices, subíndice i superíndice j subíndice k subíndice l e índices alternados m none fin de índices»
+// Expected speech announces each none as «nada» under the new mmultiscripts rule.
 #[test]
 #[ignore = "lectura en español pendiente de revisión"]
 fn huge_num_mmultiscripts() -> Result<()> {
@@ -195,7 +247,7 @@ fn huge_num_mmultiscripts() -> Result<()> {
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("es", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "mayúscula r con 4 preíndices, presubíndice mayúscula i, presuperíndice mayúscula j y preíndices alternados mayúscula k none mayúscula l none fin de preíndices y con 5 índices, subíndice i superíndice j subíndice k subíndice l e índices alternados m none fin de índices")?;
+            "mayúscula r con 4 preíndices, presubíndice mayúscula i y presuperíndice nada, presubíndice nada y presuperíndice mayúscula j, presubíndice mayúscula k y presuperíndice nada, presubíndice mayúscula l y presuperíndice nada y con 5 índices, subíndice i y superíndice nada subíndice nada y superíndice j subíndice k y superíndice nada subíndice l y superíndice nada subíndice m y superíndice nada")?;
             return Ok(());
 
 }
@@ -562,7 +614,7 @@ fn literal_speak_perpendicular() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("es", "LiteralSpeak", expr, "mayúscula a flecha derecha, perpendicular a, mayúscula b flecha derecha")?;
+  test("es", "LiteralSpeak", expr, "mayúscula a flecha derecha, tachuela hacia arriba, mayúscula b flecha derecha")?;
   return Ok(());
 
 }
@@ -644,7 +696,7 @@ fn literal_intent_property() -> Result<()> {
     </mover>
   </mrow>
  </math>"#; 
-  test("es", "SimpleSpeak", expr, "mayúscula a flecha derecha, perpendicular a, mayúscula b flecha derecha")?;
+  test("es", "SimpleSpeak", expr, "mayúscula a flecha derecha, es perpendicular a, mayúscula b flecha derecha")?;
   return Ok(());
 
 }

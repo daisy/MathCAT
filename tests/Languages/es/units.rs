@@ -533,6 +533,29 @@ fn per_and_silent_dot_between_units() -> Result<()> {
 }
 
 #[test]
+fn more_currencies() -> Result<()> {
+    // nombres del Libro de estilo interinstitucional de la UE (anexo A5) y monedas antiguas
+    let cases = [
+        ("֏", "un dram", "3 drams"), ("؋", "un afgani", "3 afganis"), ("৳", "un taka", "3 takas"),
+        ("฿", "un baht", "3 bahts"), ("៛", "un riel", "3 rieles"), ("₦", "un naira", "3 nairas"),
+        ("₫", "un dong", "3 dongs"), ("₭", "un kip", "3 kips"), ("₮", "un tugrik", "3 tugriks"),
+        ("₵", "un cedi", "3 cedis"), ("₸", "un tenge", "3 tenges"), ("₼", "un manat", "3 manats"),
+        ("₾", "un lari", "3 laris"), ("⃀", "un som", "3 soms"), ("﷼", "un rial", "3 riales"),
+        ("₧", "una peseta", "3 pesetas"), ("₣", "un franco", "3 francos"), ("₢", "un cruzeiro", "3 cruzeiros"),
+        ("₳", "un austral", "3 australes"), ("₯", "una dracma", "3 dracmas"), ("₠", "un ecu", "3 ecus"),
+        ("₰", "un pfennig", "3 pfennigs"), ("₶", "una libra tornesa", "3 libras tornesas"),
+        ("₷", "un spesmilo", "3 spesmilos"), ("₻", "un marco nórdico", "3 marcos nórdicos"),
+    ];
+    for (sym, one, three) in cases {
+        test("es", "ClearSpeak", &format!("<math><mn>1</mn><mi>{sym}</mi></math>"), one)?;
+        test("es", "SimpleSpeak", &format!("<math><mi>{sym}</mi><mn>3</mn></math>"), three)?;
+        test("es", "ClearSpeak", &format!("<math><mn>3</mn><mo>{sym}</mo></math>"), three)?;
+    }
+    test("es", "ClearSpeak", "<math><mn>1000000</mn><mi>₧</mi></math>", "1000000 de pesetas")?;
+    return Ok(());
+}
+
+#[test]
 fn currency_after_amount() -> Result<()> {
     // símbolo después de la cantidad (España): "1 €" con el mismo "un"/"una" que "€ 1"; rublo y grivna;
     // millones exactos con "de" (NVDA dice "un millón de dólares")
@@ -676,6 +699,30 @@ fn one_degree() -> Result<()> {
         ("<math><mn>25</mn><mo>℃</mo></math>", "25 grados Celsius"),
         ("<math><mn>1</mn><mspace width=\"0.167em\"></mspace><msup><mrow></mrow><mo>∘</mo></msup><mi mathvariant=\"normal\">C</mi></math>", "un grado Celsius"),
         ("<math><mn>1</mn><mo>°</mo><mn>30</mn><mo>′</mo></math>", "un grado, 30 minutos"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+        test("es", "SimpleSpeak", expr, speech)?;
+    }
+    return Ok(());
+}
+
+#[test]
+fn extra_units() -> Result<()> {
+    // tex y barn aceptan prefijos; gon, dioptría, quilate y vuelta no; plural con concordancia
+    let cases = [
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">tex</mi></math>", "5 tex"),
+        ("<math><mn>1</mn><mi mathvariant=\"normal\">tex</mi></math>", "un tex"),
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">ktex</mi></math>", "5 kilotex"),
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">barn</mi></math>", "5 barns"),
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">mbarn</mi></math>", "5 milibarns"),
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">gon</mi></math>", "5 gones"),
+        ("<math><mn>1</mn><mi mathvariant=\"normal\">gon</mi></math>", "un gon"),
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">dioptría</mi></math>", "5 dioptrías"),
+        ("<math><mn>1</mn><mi mathvariant=\"normal\">dioptría</mi></math>", "una dioptría"),
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">quilate</mi></math>", "5 quilates"),
+        ("<math><mn>1</mn><mi mathvariant=\"normal\">vuelta</mi></math>", "una vuelta"),
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">vuelta</mi></math>", "5 vueltas"),
     ];
     for (expr, speech) in cases {
         test("es", "ClearSpeak", expr, speech)?;

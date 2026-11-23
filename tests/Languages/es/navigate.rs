@@ -303,3 +303,24 @@ fn zoom_in_signed_number_in_parens() -> Result<()> {
     }));
     report_any_panic(result)
 }
+
+fn assert_nav_sequence(mathml: &str, commands: &[&str], expected: &[&str]) -> Result<()> {
+    init_panic_handler();
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        init_nav("es", mathml)?;
+        for (command, expected) in commands.iter().zip(expected) {
+            let speech = do_navigate_command(command)?;
+            assert_eq!(*expected, speech.trim_end_matches([' ', ',', ';']));
+        }
+        Ok(())
+    }));
+    report_any_panic(result)
+}
+
+#[test]
+fn min_with_condition_navigation() -> Result<()> {
+    // \min_{x∈A} f(x) se lee con la condición al final; al navegar se llega a cada parte
+    let expr = "<math><munder><mo movablelimits=\"true\">min</mo><mrow><mi>x</mi><mo>∈</mo><mi>A</mi></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></math>";
+    assert_nav_sequence(expr, &["ZoomIn", "MoveNext"], &["acercar; el mínimo", "mover a la derecha; f"])?;
+    assert_nav_sequence(expr, &["ZoomIn", "ZoomIn", "MoveNext"], &["acercar; el mínimo", "acercar; en base; el mínimo", "mover a la derecha; en límite inferior; x pertenece a  mayúscula a"])
+}

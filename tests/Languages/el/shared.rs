@@ -118,9 +118,9 @@ fn tensor_mmultiscripts() -> Result<()> {
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("el", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "κεφαλαίο r με 4 μετατεταγμένα μέρη, δείκτης i εκθέτης j δείκτης k δείκτης l")?;
+            "κεφαλαίο r με 4 μετατεταγμένα μέρη, δείκτης i και εκθέτης κανένα δείκτης κανένα και εκθέτης j δείκτης k και εκθέτης κανένα δείκτης l και εκθέτης κανένα")?;
     test_prefs("el", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "κεφαλαίο r με 4 μετατεταγμένα μέρη, δείκτης i εκθέτης j δείκτης k δείκτης l")?;
+            "κεφαλαίο r με 4 μετατεταγμένα μέρη, δείκτης i και εκθέτης κανένα δείκτης κανένα και εκθέτης j δείκτης k και εκθέτης κανένα δείκτης l και εκθέτης κανένα")?;
             return Ok(());
 
 }
@@ -132,7 +132,7 @@ fn huge_num_mmultiscripts() -> Result<()> {
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("el", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "κεφαλαίο r με 4 προτεταγμένα μέρη, προτεταγμένος δείκτης κεφαλαίο i, προτεταγμένος εκθέτης κεφαλαίο j και εναλλάξ προτεταγμένα μέρη κεφαλαίο k none κεφαλαίο l none τέλος προτεταγμένων μερών και με 5 μετατεταγμένα μέρη, δείκτης i εκθέτης j δείκτης k δείκτης l και εναλλάξ τεταγμένα μέρη m none τέλος τεταγμένων μερών")?;
+            "κεφαλαίο r με 4 προτεταγμένα μέρη, προτεταγμένος δείκτης κεφαλαίο i και προτεταγμένος εκθέτης κανένα, προτεταγμένος δείκτης κανένα και προτεταγμένος εκθέτης κεφαλαίο j, προτεταγμένος δείκτης κεφαλαίο k και προτεταγμένος εκθέτης κανένα, προτεταγμένος δείκτης κεφαλαίο l και προτεταγμένος εκθέτης κανένα και με 5 μετατεταγμένα μέρη, δείκτης i και εκθέτης κανένα δείκτης κανένα και εκθέτης j δείκτης k και εκθέτης κανένα δείκτης l και εκθέτης κανένα δείκτης m και εκθέτης κανένα")?;
             return Ok(());
 //theodora. Το none στις άλλες γλώσσες το έχουν αφήσει έτσι, οπότε το άφησα κι εγώ έτσι.
 }
@@ -449,14 +449,14 @@ fn literal_speak_perpendicular() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
     </mover>
   </mrow>
  </math>"#; 
-  test("el", "LiteralSpeak", expr, "κεφαλαίο A βέλος προς τα δεξιά; perpendicular to, κεφαλαίο b βέλος προς τα δεξιά")?;
+  test("el", "LiteralSpeak", expr, "κεφαλαίο A βέλος προς τα δεξιά; είναι κάθετο, κεφαλαίο b βέλος προς τα δεξιά")?;
   return Ok(());
 
 }
@@ -532,14 +532,14 @@ fn literal_intent_property() -> Result<()> {
       <mi data-latex='A'>A</mi>
       <mo stretchy='false'>→</mo>
     </mover>
-    <mo intent='perpendicular-to'>⊥</mo>
+    <mo intent='perpendicular'>⊥</mo>
     <mover data-latex='\vec{B}'>
       <mi data-latex='B'>B</mi>
       <mo stretchy='false'>→</mo>
     </mover>
   </mrow>
  </math>"#; 
-  test("el", "SimpleSpeak", expr, "κεφαλαίο A βέλος προς τα δεξιά; perpendicular to, κεφαλαίο b βέλος προς τα δεξιά")?;
+  test("el", "SimpleSpeak", expr, "κεφαλαίο A βέλος προς τα δεξιά; είναι κάθετο, κεφαλαίο b βέλος προς τα δεξιά")?;
   return Ok(());
 }
 

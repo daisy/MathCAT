@@ -100,9 +100,9 @@ fn tensor_mmultiscripts() -> Result<()> {
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "iso r jolla on 4 jälkikirjoitusta, alaindeksi i yläindeksi j alaindeksi k alaindeksi l")?;
+            "iso r jolla on 4 jälkikirjoitusta, alaindeksi i ja yläindeksi ei mitään alaindeksi ei mitään ja yläindeksi j alaindeksi k ja yläindeksi ei mitään alaindeksi l ja yläindeksi ei mitään")?;
     test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "iso r jolla on 4 jälkikirjoitusta, ala i ylä j ala k ala l")?;
+            "iso r jolla on 4 jälkikirjoitusta, ala i ja ylä ei mitään ala ei mitään ja ylä j ala k ja ylä ei mitään ala l ja ylä ei mitään")?;
             return Ok(());
 
 }
@@ -114,7 +114,7 @@ fn huge_num_mmultiscripts() -> Result<()> {
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("fi", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "iso r 4 etumäärettä, etualaindeksi iso i, etuyläindeksi iso j ja vaihtelevat etumääreet iso k none iso l none loppu etumääreet ja jolla on 5 jälkikirjoitusta, alaindeksi i yläindeksi j alaindeksi k alaindeksi l ja vaihtelevia määreitä m none loppu määreet")?;
+            "iso r 4 etumäärettä, etualaindeksi iso i ja etuyläindeksi ei mitään, etualaindeksi ei mitään ja etuyläindeksi iso j, etualaindeksi iso k ja etuyläindeksi ei mitään, etualaindeksi iso l ja etuyläindeksi ei mitään ja jolla on 5 jälkikirjoitusta, alaindeksi i ja yläindeksi ei mitään alaindeksi ei mitään ja yläindeksi j alaindeksi k ja yläindeksi ei mitään alaindeksi l ja yläindeksi ei mitään alaindeksi m ja yläindeksi ei mitään")?;
             return Ok(());
 
 }
@@ -408,7 +408,7 @@ fn FinME_difference_quotinent() -> Result<()> {
     </mfrac>
   </mrow>
 </math>";
-test("fi", "ClearSpeak", expr, "iso d f arvolla a; on yhtä suuri kuin, f pilkku, arvolla a, on yhtä suuri kuin; murtoluku osoittaja; f arvolla x, miinus f arvolla a; ja nimittäjä x miinus a; on yhtä suuri kuin; raja-arvo kun h lähestyy 0; arvolla; murtoluku osoittaja; f arvolla, auki sulku a plus h, kiinni sulku; miinus f arvolla a; ja nimittäjä h")?;
+test("fi", "ClearSpeak", expr, "iso d f arvolla a; on yhtä suuri kuin, f pilkku, arvolla a, on yhtä suuri kuin; raja-arvo kun x lähestyy a; arvolla; murtoluku osoittaja; f arvolla x, miinus f arvolla a; ja nimittäjä x miinus a; on yhtä suuri kuin; raja-arvo kun h lähestyy 0; arvolla; murtoluku osoittaja; f arvolla, auki sulku a plus h, kiinni sulku; miinus f arvolla a; ja nimittäjä h")?;
 test("fi", "SimpleSpeak", expr, "iso d f arvolla a; on yhtä suuri kuin, f pilkku, arvolla a, on yhtä suuri kuin; raja-arvo kun x lähestyy a; arvolla; murtoluku, f arvolla x, miinus f arvolla a, per, x miinus a, loppu murtoluku; on yhtä suuri kuin; raja-arvo kun h lähestyy 0; arvolla; murtoluku, f arvolla, auki sulku a plus h, kiinni sulku; miinus f arvolla a, per h, loppu murtoluku")?;
 return Ok(());
 
