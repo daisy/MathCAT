@@ -323,12 +323,12 @@ fn variable_index_root() -> Result<()> {
     return Ok(());
 }
 
-/// The fourth-root sign ∜ uses the same kana word as an mroot.
+/// The fourth-root sign ∜ is read like an mroot of index 4, with オブ as for √.
 #[test]
 fn fourth_root_sign() -> Result<()> {
     let expr = "<math><mo>&#x221C;</mo><mi>x</mi></math>";
-    test("ja", "ClearSpeak", expr, "4じょうこん x")?;
-    test("ja", "SimpleSpeak", expr, "4じょうこん x")?;
+    test("ja", "ClearSpeak", expr, "4 じょうこん オブ x")?;
+    test("ja", "SimpleSpeak", expr, "4 じょうこん オブ x")?;
     return Ok(());
 }
 
@@ -598,6 +598,23 @@ fn enclosed_characters() -> Result<()> {
     return Ok(());
 }
 
+/// The arrows in U+2190-21FF use the words of their neighbours: TO BAR is 棒へ向かう like ⤒, a corner is 隅 like ⌜,
+/// SMALL CIRCLE is 小さい円 like ⥈, and ↴ is said like ⤵ because 角が is read カクガ.
+#[test]
+fn arrows_to_bar_and_corner() -> Result<()> {
+    let expr = "<math><mi>&#x21e5;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "棒へ向かう右向き矢印")?;
+    let expr = "<math><mi>&#x21f1;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "隅へ向かう北西矢印")?;
+    let expr = "<math><mi>&#x21f4;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "小さい円付き右向き矢印")?;
+    let expr = "<math><mi>&#x21b4;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "右へ進んで下へ折れる矢印")?;
+    let expr = "<math><mi>&#x214e;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "逆さエフ")?;
+    return Ok(());
+}
+
 /// The MathType characters in U+E900-E9FF use the words of the standard symbols they look like:
 /// ⨫ for e919, the space of ⊓ ⊔ for e920, ⧴ for e94d. 差 異体 was read サ イタイ, so e96d is 差の変形.
 #[test]
@@ -612,6 +629,23 @@ fn mathtype_relation_symbols() -> Result<()> {
     test("ja", "SimpleSpeak", expr, "差の変形")?;
     let expr = "<math><mi>&#xe90a;</mi></math>";
     test("ja", "SimpleSpeak", expr, "要素として含む オア イコール")?;
+    return Ok(());
+}
+
+/// The dingbats and arrows in U+2700-27FF use the words of their neighbours: ★ is 黒星, ⟨ is 山カッコ,
+/// ⇚ writes 3重 with a digit, and ⓫ is 黒丸 11. 6つ角 was read ムッツカク, so ✶ says 先が6つ.
+#[test]
+fn dingbats_and_supplemental_arrows() -> Result<()> {
+    let expr = "<math><mi>&#x2736;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "先が6つの黒星")?;
+    let expr = "<math><mi>&#x27ea;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "二重の山カッコ")?;
+    let expr = "<math><mi>&#x27f0;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "上向き4重矢印")?;
+    let expr = "<math><mi>&#x2776;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "黒丸 1")?;
+    let expr = "<math><mi>&#x27d5;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "左外部結合")?;
     return Ok(());
 }
 
@@ -633,6 +667,23 @@ fn cjk_compatibility_squares() -> Result<()> {
     return Ok(());
 }
 
+/// The MathType arrows in U+EB00-EBFF use the words of the standard arrows they look like:
+/// 棒へ向かう and 棒から出る like ⤒ and ⥠, and eb13-eb15 say 折れる like ↴, because 角 was read カク.
+#[test]
+fn mathtype_arrows() -> Result<()> {
+    let expr = "<math><mi>&#xeb13;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "左へ進んで下へ折れる矢印")?;
+    let expr = "<math><mi>&#xeb24;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "棒から出るうえかえし左向きハープーン")?;
+    let expr = "<math><mi>&#xeb28;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "棒へ向かう左かえし上向きハープーン")?;
+    let expr = "<math><mi>&#xeb2c;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "棒から出る左かえし上向きハープーン")?;
+    let expr = "<math><mi>&#xeb30;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "棒へ向かう上向き矢印")?;
+    return Ok(());
+}
+
 /// The telegraph symbols for months, hours and days had no entry. The hours decompose to 点, which is
 /// "o'clock" in Chinese but てん ("point") in Japanese, so 0点 would be れいてん; they are spoken with 時.
 /// Open JTalk reads 1日 alone as イチニチ ("one day"), so the first day is ついたち.
@@ -648,6 +699,23 @@ fn telegraph_symbols() -> Result<()> {
     test("ja", "SimpleSpeak", expr, "ついたち")?;
     let expr = "<math><mi>&#x33f3;</mi></math>";
     test("ja", "SimpleSpeak", expr, "20日")?;
+    return Ok(());
+}
+
+/// ※ is こめじるし because Open JTalk reads 米印 as ベーシルシ. ‸ is キャレット like ^, since の alone
+/// says nothing. ⃦ is an overlay like ⃒ and ⃥, so it is 重ね二重縦線装飾.
+#[test]
+fn general_punctuation_and_currency() -> Result<()> {
+    let expr = "<math><mi>&#x203b;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "こめじるし")?;
+    let expr = "<math><mi>&#x2038;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "キャレット")?;
+    let expr = "<math><mi>&#x20e6;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "重ね二重縦線装飾")?;
+    let expr = "<math><mi>&#x2031;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "パーミリアド")?;
+    let expr = "<math><mi>&#x20b4;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "フリヴニャ")?;
     return Ok(());
 }
 
@@ -930,6 +998,22 @@ fn operator_words_in_unicode_full() -> Result<()> {
     return Ok(());
 }
 
+/// ∻ (homothetic) was 位似, which Open JTalk reads くらいに, so it is 相似の位置 like ∽ 相似,
+/// and ∛ says 立方根 オブ like √ 平方根 オブ (∜ is in fourth_root_sign).
+#[test]
+fn more_operator_words_in_unicode_full() -> Result<()> {
+    for (ch, expected) in [
+        ("&#x223B;", "x 相似の位置 y"),
+        ("&#x22F2;", "x 長い横線付き要素オブ y"),
+    ] {
+        let expr = format!("<math><mi>x</mi><mo>{ch}</mo><mi>y</mi></math>");
+        test("ja", "SimpleSpeak", &expr, expected)?;
+    }
+    let expr = "<math><mo>&#x221B;</mo><mi>x</mi></math>";
+    test("ja", "SimpleSpeak", expr, "立方根 オブ x")?;
+    return Ok(());
+}
+
 /// Open JTalk reads 波形 at the start of a word as なみかた and 対の as たいの
 /// ("versus"), so the wave arrows are 波形の … and the paired arrows are 一対の ….
 #[test]
@@ -1164,6 +1248,21 @@ fn misread_symbol_names() -> Result<()> {
         ("&#x27B3;", "白い羽根付き右向き矢印"),
         ("&#x23E4;", "しんちょく度"),
         ("&#x29A8;", "開いたへんが上と右を指す矢印で終わる測定角"),
+    ] {
+        let expr = format!("<math><mo>{ch}</mo></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
+/// The white arrows in U+2B00-2BFF put 白 after the direction like ⇦ 左向き白矢印 and
+/// ⇳ 上下白矢印, and ⬕ says 左下側 like ⬔ 右上側.
+#[test]
+fn misc_symbols_and_arrows() -> Result<()> {
+    for (ch, expected) in [
+        ("&#x2B00;", "北東白矢印"),
+        ("&#x2B04;", "左右白矢印"),
+        ("&#x2B15;", "左下側斜め半分黒の四角"),
     ] {
         let expr = format!("<math><mo>{ch}</mo></math>");
         test("ja", "ClearSpeak", &expr, expected)?;
@@ -2503,5 +2602,22 @@ fn supplemental_operators() -> Result<()> {
     test("ja", "SimpleSpeak", expr, "ノット イコールの上に部分集合オブ")?;
     let expr = "<math><mi>&#x2a7b;</mi></math>";
     test("ja", "SimpleSpeak", expr, "上に疑問符付き小なり")?;
+    return Ok(());
+}
+
+/// ⧓ uses the ボウタイ of ⋈, ⥈ the 小さい円 of SMALL CIRCLE, and ⦦ ⧖ ⥌ avoid words that Open JTalk
+/// misreads (斜角 as ハスカク, 白砂時計 as ハクシャトケー, 下端 as カタン).
+#[test]
+fn miscellaneous_math_symbols_b() -> Result<()> {
+    let expr = "<math><mi>&#x29d3;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "黒ボウタイ")?;
+    let expr = "<math><mi>&#x2948;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "小さい円を貫く左右矢印")?;
+    let expr = "<math><mi>&#x29a6;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "上に開いた斜めの角")?;
+    let expr = "<math><mi>&#x29d6;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "白い砂時計")?;
+    let expr = "<math><mi>&#x294c;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "うわはし右かえし したはし左かえし 上下ハープーン")?;
     return Ok(());
 }
