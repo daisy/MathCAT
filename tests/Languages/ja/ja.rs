@@ -684,6 +684,29 @@ fn mathtype_arrows() -> Result<()> {
     return Ok(());
 }
 
+/// The MathType negated relations in U+EA00-EAFF use the words of the standard relations they look like:
+/// バックスラッシュ 部分集合オブ like ⟈, ノット 上にドット付き要素オブ like ⋵ and ∉, さらにきわめて like ⋘,
+/// 凹凸付き like ⪮ and ノット 四角の像 like ⋢, and contain is 要素として含む like ∋. A variant says 変形 like ⦜,
+/// because 異体 was read イタイ.
+#[test]
+fn mathtype_negated_relations() -> Result<()> {
+    let expr = "<math><mi>&#xea02;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "ノット きわめて小なり 変形")?;
+    let expr = "<math><mi>&#xea0a;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "ノット 要素として含む オア イコール")?;
+    let expr = "<math><mi>&#xea0d;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "バックスラッシュ 部分集合オブ")?;
+    let expr = "<math><mi>&#xea22;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "ノット 上にドット付き要素オブ")?;
+    let expr = "<math><mi>&#xea48;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "ノット さらにきわめて小なり")?;
+    let expr = "<math><mi>&#xea58;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "ノット 凹凸付きイコール")?;
+    let expr = "<math><mi>&#xea60;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "ノット 四角の像")?;
+    return Ok(());
+}
+
 /// The telegraph symbols for months, hours and days had no entry. The hours decompose to 点, which is
 /// "o'clock" in Chinese but てん ("point") in Japanese, so 0点 would be れいてん; they are spoken with 時.
 /// Open JTalk reads 1日 alone as イチニチ ("one day"), so the first day is ついたち.
