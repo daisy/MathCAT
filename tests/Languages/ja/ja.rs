@@ -667,6 +667,23 @@ fn cjk_compatibility_squares() -> Result<()> {
     return Ok(());
 }
 
+/// The MathType arrows in U+EB00-EBFF use the words of the standard arrows they look like:
+/// 棒へ向かう and 棒から出る like ⤒ and ⥠, and eb13-eb15 say 折れる like ↴, because 角 was read カク.
+#[test]
+fn mathtype_arrows() -> Result<()> {
+    let expr = "<math><mi>&#xeb13;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "左へ進んで下へ折れる矢印")?;
+    let expr = "<math><mi>&#xeb24;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "棒から出るうえかえし左向きハープーン")?;
+    let expr = "<math><mi>&#xeb28;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "棒へ向かう左かえし上向きハープーン")?;
+    let expr = "<math><mi>&#xeb2c;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "棒から出る左かえし上向きハープーン")?;
+    let expr = "<math><mi>&#xeb30;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "棒へ向かう上向き矢印")?;
+    return Ok(());
+}
+
 /// The telegraph symbols for months, hours and days had no entry. The hours decompose to 点, which is
 /// "o'clock" in Chinese but てん ("point") in Japanese, so 0点 would be れいてん; they are spoken with 時.
 /// Open JTalk reads 1日 alone as イチニチ ("one day"), so the first day is ついたち.
