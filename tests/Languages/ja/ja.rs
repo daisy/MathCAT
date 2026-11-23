@@ -2621,3 +2621,30 @@ fn miscellaneous_math_symbols_b() -> Result<()> {
     test("ja", "SimpleSpeak", expr, "うわはし右かえし したはし左かえし 上下ハープーン")?;
     return Ok(());
 }
+
+/// The MathType pieces in U+EC00-ECFF use the words of the standard symbols they are drawn with:
+/// 下側中カッコ like ⏟, 上側丸カッコ like ⏜, 筆算の割り算 like ⟌, 左天井床 like ⌈ and ⌊, and 左上側 like the
+/// top right rectangle ec90. 下部 was read カブ ("turnip"), so the bottom pieces here, in U+EBxx and U+F8xx
+/// and ⌡ say 下の部分, after a space because 下 right after インテグラル was read カ.
+#[test]
+fn mathtype_bracket_pieces() -> Result<()> {
+    let expr = "<math><mi>&#xec00;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "下側中カッコ 左端")?;
+    let expr = "<math><mi>&#xeca1;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "上側丸カッコ 左端")?;
+    let expr = "<math><mi>&#xec1f;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "根号 下の部分")?;
+    let expr = "<math><mi>&#xec32;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "筆算の割り算")?;
+    let expr = "<math><mi>&#xec95;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "左天井床 延長部")?;
+    let expr = "<math><mi>&#xec80;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "左上側の長方形")?;
+    let expr = "<math><mi>&#xeb82;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "下向きハープーンの左に上向きハープーン 下の部分")?;
+    let expr = "<math><mi>&#xf8f0;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "角かっこ 下の部分")?;
+    let expr = "<math><mi>&#x2321;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "インテグラル 下の部分")?;
+    return Ok(());
+}
