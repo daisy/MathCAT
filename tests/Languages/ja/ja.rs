@@ -1253,6 +1253,22 @@ fn shape_names_read_correctly() -> Result<()> {
     return Ok(());
 }
 
+/// ◩ and ◪ are halved on the diagonal, so they say 斜め like ⬔ 右上側斜め半分黒の四角, and ▧ says
+/// 左上側から like ▨ 右上側から. ◫ says 縦の, since its bisecting line is vertical.
+#[test]
+fn geometric_shapes() -> Result<()> {
+    for (ch, expected) in [
+        ("&#x25E9;", "左上側斜め半分黒の四角"),
+        ("&#x25EA;", "右下側斜め半分黒の四角"),
+        ("&#x25A7;", "左上側から右下への斜線塗りの四角"),
+        ("&#x25EB;", "縦の二等分線付き白四角"),
+    ] {
+        let expr = format!("<math><mo>{ch}</mo></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
 /// Symbol names that Open JTalk misread, found by speaking the zh-cn tests' symbols in ja:
 /// 環 was タマキ, 魚の尾 ギョノオ, 凹辺 オーベ, 太 before a noun フトシ, 小文字 after a space
 /// コモンジ, 形 after 小なり カタチ, 白 before すみ ハク and before 羽根 シラ, 真直度 マッスグタビ
