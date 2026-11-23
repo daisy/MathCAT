@@ -1,6 +1,6 @@
 // These are additional Nemeth tests from other sources, mainly from bugs/issues
 use crate::common::*;
-use anyhow::Result;
+use anyhow::{Context, Result};
 
 
 #[test]
@@ -170,4 +170,26 @@ fn dots() -> Result<()> {
     </math>";
     test_braille("Nemeth",expr, "⠐⠭⠣⠡⠻⠬⠐⠭⠣⠡⠡⠻⠬⠐⠭⠣⠡⠡⠡⠻")?;
   return Ok(());
+}
+
+#[test]
+fn styled_greek_capitals_bug_1016() -> Result<()> {
+    // Unicode places capital theta symbol (ϴ) between rho and sigma in all five styled alphabets.
+    // Omitting its cell shifts sigma through psi and drops omega.
+    let letter_cells = "⠁⠃⠛⠙⠑⠵⠱⠹⠊⠅⠇⠍⠝⠭⠕⠏⠗⠹⠎⠞⠥⠋⠯⠽⠺";
+    for (capitals, typeface) in [
+        ('𝚨'..='𝛀', "⠸"),    // bold
+        ('𝛢'..='𝛺', ""),     // italic
+        ('𝜜'..='𝜴', "⠸"),    // bold italic
+        ('𝝖'..='𝝮', "⠠⠨⠸"),  // sans-serif bold
+        ('𝞐'..='𝞨', "⠠⠨⠸"),  // sans-serif bold italic
+    ] {
+        for (capital, cell) in capitals.zip(letter_cells.chars()) {
+            let mathml = format!("<math><mi>{capital}</mi></math>");
+            let expected = format!("{typeface}⠨⠠{cell}");
+            test_braille("Nemeth", &mathml, &expected)
+                .with_context(|| format!("styled Greek capital {capital} (U+{:04X})", u32::from(capital)))?;
+        }
+    }
+    return Ok(());
 }
