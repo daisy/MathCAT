@@ -598,6 +598,23 @@ fn enclosed_characters() -> Result<()> {
     return Ok(());
 }
 
+/// The arrows in U+2190-21FF use the words of their neighbours: TO BAR is 棒へ向かう like ⤒, a corner is 隅 like ⌜,
+/// SMALL CIRCLE is 小さい円 like ⥈, and ↴ is said like ⤵ because 角が is read カクガ.
+#[test]
+fn arrows_to_bar_and_corner() -> Result<()> {
+    let expr = "<math><mi>&#x21e5;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "棒へ向かう右向き矢印")?;
+    let expr = "<math><mi>&#x21f1;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "隅へ向かう北西矢印")?;
+    let expr = "<math><mi>&#x21f4;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "小さい円付き右向き矢印")?;
+    let expr = "<math><mi>&#x21b4;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "右へ進んで下へ折れる矢印")?;
+    let expr = "<math><mi>&#x214e;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "逆さエフ")?;
+    return Ok(());
+}
+
 /// The MathType characters in U+E900-E9FF use the words of the standard symbols they look like:
 /// ⨫ for e919, the space of ⊓ ⊔ for e920, ⧴ for e94d. 差 異体 was read サ イタイ, so e96d is 差の変形.
 #[test]
