@@ -685,6 +685,23 @@ fn telegraph_symbols() -> Result<()> {
     return Ok(());
 }
 
+/// ※ is こめじるし because Open JTalk reads 米印 as ベーシルシ. ‸ is キャレット like ^, since の alone
+/// says nothing. ⃦ is an overlay like ⃒ and ⃥, so it is 重ね二重縦線装飾.
+#[test]
+fn general_punctuation_and_currency() -> Result<()> {
+    let expr = "<math><mi>&#x203b;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "こめじるし")?;
+    let expr = "<math><mi>&#x2038;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "キャレット")?;
+    let expr = "<math><mi>&#x20e6;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "重ね二重縦線装飾")?;
+    let expr = "<math><mi>&#x2031;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "パーミリアド")?;
+    let expr = "<math><mi>&#x20b4;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "フリヴニャ")?;
+    return Ok(());
+}
+
 /// The negation sign is ノット. The seed said コメントはありません -- "there are no
 /// comments" -- because the English source word is "not".
 #[test]
