@@ -323,12 +323,12 @@ fn variable_index_root() -> Result<()> {
     return Ok(());
 }
 
-/// The fourth-root sign ∜ uses the same kana word as an mroot.
+/// The fourth-root sign ∜ is read like an mroot of index 4, with オブ as for √.
 #[test]
 fn fourth_root_sign() -> Result<()> {
     let expr = "<math><mo>&#x221C;</mo><mi>x</mi></math>";
-    test("ja", "ClearSpeak", expr, "4じょうこん x")?;
-    test("ja", "SimpleSpeak", expr, "4じょうこん x")?;
+    test("ja", "ClearSpeak", expr, "4 じょうこん オブ x")?;
+    test("ja", "SimpleSpeak", expr, "4 じょうこん オブ x")?;
     return Ok(());
 }
 
@@ -978,6 +978,22 @@ fn operator_words_in_unicode_full() -> Result<()> {
         let expr = format!("<math><mi>x</mi><mo>{ch}</mo><mi>y</mi></math>");
         test("ja", "SimpleSpeak", &expr, expected)?;
     }
+    return Ok(());
+}
+
+/// ∻ (homothetic) was 位似, which Open JTalk reads くらいに, so it is 相似の位置 like ∽ 相似,
+/// and ∛ says 立方根 オブ like √ 平方根 オブ (∜ is in fourth_root_sign).
+#[test]
+fn more_operator_words_in_unicode_full() -> Result<()> {
+    for (ch, expected) in [
+        ("&#x223B;", "x 相似の位置 y"),
+        ("&#x22F2;", "x 長い横線付き要素オブ y"),
+    ] {
+        let expr = format!("<math><mi>x</mi><mo>{ch}</mo><mi>y</mi></math>");
+        test("ja", "SimpleSpeak", &expr, expected)?;
+    }
+    let expr = "<math><mo>&#x221B;</mo><mi>x</mi></math>";
+    test("ja", "SimpleSpeak", expr, "立方根 オブ x")?;
     return Ok(());
 }
 
