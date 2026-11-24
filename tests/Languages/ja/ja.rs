@@ -2778,3 +2778,14 @@ fn misc_technical_names() -> Result<()> {
     test("ja", "SimpleSpeak", expr, "ざぐり")?;
     return Ok(());
 }
+
+/// 〰 (wavy dash) was 波線, which Open JTalk reads as ハセン. It is 波形のダッシュ, like the
+/// 波形の arrows, so it stays apart from 〜 (wave dash), which is 波ダッシュ.
+#[test]
+fn wavy_dash_and_wave_dash() -> Result<()> {
+    let expr = "<math><mi>&#x3030;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "波形のダッシュ")?;
+    let expr = "<math><mi>&#x301C;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "波ダッシュ")?;
+    return Ok(());
+}
