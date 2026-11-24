@@ -725,6 +725,20 @@ fn telegraph_symbols() -> Result<()> {
     return Ok(());
 }
 
+/// The yin and yang departing tone marks write 陰 and 陽 in kana, because Open JTalk read 陰去声 as
+/// カゲキョショー and 陽去声 as ヒキョショー. ʶ says 小型 like en "small", because the spelled R already
+/// adds おおもじ and 小型大文字 said the capital twice.
+#[test]
+fn modifier_tone_marks() -> Result<()> {
+    let expr = "<math><mi>&#x02ea;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "修飾文字 いん去声記号")?;
+    let expr = "<math><mi>&#x02eb;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "修飾文字 よう去声記号")?;
+    let expr = "<math><mi>&#x02b6;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "修飾文字 小型 逆さ おおもじ r")?;
+    return Ok(());
+}
+
 /// ※ is こめじるし because Open JTalk reads 米印 as ベーシルシ. ‸ is キャレット like ^, since の alone
 /// says nothing. ⃦ is an overlay like ⃒ and ⃥, so it is 重ね二重縦線装飾.
 #[test]
