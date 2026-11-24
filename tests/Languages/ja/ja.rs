@@ -1248,6 +1248,23 @@ fn bracket_and_arrow_names_read_correctly() -> Result<()> {
     return Ok(());
 }
 
+/// Open JTalk read 硬音記号 as カタオトキゴー and 軟音記号 as ヤワオトキゴー, so the sound
+/// part is in kana; ы uses its Russian name ゥイ instead of the old name yeru.
+#[test]
+fn cyrillic_letter_names() -> Result<()> {
+    for (ch, expected) in [
+        ("&#x044A;", "こうおん記号"),
+        ("&#x044B;", "ゥイ"),
+        ("&#x044C;", "なんおん記号"),
+        ("&#x042B;", "おおもじ ゥイ"),
+    ] {
+        let expr = format!("<math><mi>{ch}</mi></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+        test("ja", "SimpleSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
 /// Shape names that Open JTalk misread: 中くらい was ナカクライ, 四分円 was ヨンプンエン
 /// (with only 四分円 in kana, 右上 became ミギジョー, 左上 ヒダリジョー and 左下 ヒダリクダ,
 /// so the whole name is kana) and 角丸 was スミマル (also in the menclose roundedbox);
