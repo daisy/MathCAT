@@ -2712,3 +2712,23 @@ fn mathtype_bracket_pieces() -> Result<()> {
     test("ja", "SimpleSpeak", expr, "インテグラル 下の部分")?;
     return Ok(());
 }
+
+/// ⌇ is なみ線 because Open JTalk read 波線 as ハセン. ⌔ is おうぎ形, the way school math books write
+/// the sector. ⌠ says インテグラル 上部 with a space, like ⌡ インテグラル 下の部分 and the other top pieces.
+/// ⌐ and ⌙ say ノット記号 like ⫬, and ⌴ is ざぐり, the way JIS drafting writes the counterbore.
+#[test]
+fn misc_technical_names() -> Result<()> {
+    let expr = "<math><mi>&#x2307;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "なみ線")?;
+    let expr = "<math><mi>&#x2314;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "おうぎ形")?;
+    let expr = "<math><mi>&#x2320;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "インテグラル 上部")?;
+    let expr = "<math><mi>&#x2310;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "逆ノット記号")?;
+    let expr = "<math><mi>&#x2319;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "逆さノット記号")?;
+    let expr = "<math><mi>&#x2334;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "ざぐり")?;
+    return Ok(());
+}
