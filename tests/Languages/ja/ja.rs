@@ -1800,6 +1800,17 @@ fn chemical_bonds() -> Result<()> {
     return Ok(());
 }
 
+/// ⸮ is the reversed question mark. It said 逆疑問符 like ¿, the inverted question mark, so the two
+/// could not be told apart; it now says 左右反転疑問符.
+#[test]
+fn supplemental_punctuation() -> Result<()> {
+    let expr = "<math><mi>&#x2e2e;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "左右反転疑問符")?;
+    let expr = "<math><mi>&#xbf;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "逆疑問符")?;
+    return Ok(());
+}
+
 /// The short readings of sub and superscript are 下付き and 上付き, the same
 /// stems as the verbose 下付き文字 / 上付き文字 in the branch beside them.
 /// サブサブ is the word "sub" doubled and スーパー is a supermarket.
