@@ -2241,7 +2241,7 @@ impl CanonicalizeContext {
 				if let Some((i,_)) = children.iter().enumerate()
 					.find(|&(_,&el)| name(as_element(el)) == "mprescripts") { i } else { n };
 			let has_misplaced_mprescripts = i_mprescripts & 1 == 0;  // should be first, third, ... child
-			let has_proper_number_of_children =if i_mprescripts == n { n & 1 != 0 } else { n & 1 == 0 }; // base + pairs is odd, mprescripts makes it even
+			let has_proper_number_of_children = if i_mprescripts == n { n & 1 != 0 } else { n & 1 == 0 }; // base + pairs is odd, mprescripts makes it even
 			let has_trailing_mprescripts = i_mprescripts + 1 == n;
 			if has_misplaced_mprescripts || !has_proper_number_of_children || has_trailing_mprescripts || has_none_none_script_pair(&children) {
 				// need to reset the children
