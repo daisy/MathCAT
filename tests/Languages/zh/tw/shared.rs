@@ -118,9 +118,9 @@ fn tensor_mmultiscripts() -> Result<()> {
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "大寫 r 有 4 後標, 下標 i 上標 j 下標 k 下標 l")?;
+            "大寫 r 有 4 後標, 下標 i 且 上標 無 下標 無 且 上標 j 下標 k 且 上標 無 下標 l 且 上標 無")?;
     test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "大寫 r 有 4 後標, 下標 i 上標 j 下標 k 下標 l")?;
+            "大寫 r 有 4 後標, 下標 i 且 上標 無 下標 無 且 上標 j 下標 k 且 上標 無 下標 l 且 上標 無")?;
             return Ok(());
 
 }
@@ -132,7 +132,7 @@ fn huge_num_mmultiscripts() -> Result<()> {
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("zh-tw", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "大寫 r 有 4 前標, 前下標 大寫 i, 前上標 大寫 j 與交替前標 大寫 k none 大寫 l none 結束前標 且 有 5 後標, 下標 i 上標 j 下標 k 下標 l 與交替後標 m none 結束後標")?;
+            "大寫 r 有 4 前標, 前下標 大寫 i 且 前上標 無, 前下標 無 且 前上標 大寫 j, 前下標 大寫 k 且 前上標 無, 前下標 大寫 l 且 前上標 無 且 有 5 後標, 下標 i 且 上標 無 下標 無 且 上標 j 下標 k 且 上標 無 下標 l 且 上標 無 下標 m 且 上標 無")?;
             return Ok(());
 
 }

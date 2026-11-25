@@ -1241,7 +1241,7 @@
  - "⏤": [T: "egyenesség"]                       	#  0x23e4	(en: 'straightness', DeepL translation)
  - "⏥": [T: "laposság"]                         	#  0x23e5	(en: 'flatness', DeepL translation)
  - "⏦":                                         	#  0x23e6
-     - SPELL: "ac"
+     - SPELL: "'ac'"
      - T: "jelenlegi"                           	# 	(en: 'current', DeepL translation)
  - "⏧": [T: "elektromos kereszteződés"]         	#  0x23e7	(en: 'electrical intersection', DeepL translation)
  - "①-⑨":                                       	#  0x2460 - 0x2469

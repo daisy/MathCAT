@@ -118,9 +118,9 @@ fn tensor_mmultiscripts() -> Result<()> {
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("pl", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "wielka r z 4 prawe indeksy, indeks dolny i indeks górny j indeks dolny k indeks dolny l")?;
+            "wielka r z 4 prawe indeksy, indeks dolny i i indeks górny brak indeks dolny brak i indeks górny j indeks dolny k i indeks górny brak indeks dolny l i indeks górny brak")?;
     test_prefs("pl", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "wielka r z 4 prawe indeksy, indeks dolny i indeks górny j indeks dolny k indeks dolny l")?;
+            "wielka r z 4 prawe indeksy, indeks dolny i i indeks górny brak indeks dolny brak i indeks górny j indeks dolny k i indeks górny brak indeks dolny l i indeks górny brak")?;
             return Ok(());
 
 }
@@ -132,7 +132,7 @@ fn huge_num_mmultiscripts() -> Result<()> {
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("pl", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "wielka r z 4 lewe indeksy, lewy indeks dolny wielka i, lewy indeks górny wielka j i kolejne lewe indeksy wielka k none wielka l none koniec lewych indeksów i z 5 prawe indeksy, indeks dolny i indeks górny j indeks dolny k indeks dolny l i kolejne indeksy m none koniec indeksów")?;
+            "wielka r z 4 lewe indeksy, lewy indeks dolny wielka i i lewy indeks górny brak, lewy indeks dolny brak i lewy indeks górny wielka j, lewy indeks dolny wielka k i lewy indeks górny brak, lewy indeks dolny wielka l i lewy indeks górny brak i z 5 prawe indeksy, indeks dolny i i indeks górny brak indeks dolny brak i indeks górny j indeks dolny k i indeks górny brak indeks dolny l i indeks górny brak indeks dolny m i indeks górny brak")?;
             return Ok(());
 
 }

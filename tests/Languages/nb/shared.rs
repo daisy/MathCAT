@@ -119,9 +119,9 @@ fn tensor_mmultiscripts() -> Result<()> {
             <mi>R</mi> <mi>i</mi><none/> <none/><mi>j</mi> <mi>k</mi><none/> <mi>l</mi><none/> 
         </mmultiscripts></math>";
     test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "stor r med 4 høyre indeks, senket i, hevet j, senket k, senket l")?;
+            "stor r med 4 høyre indeks, senket i, og hevet ingen, senket ingen, og hevet j, senket k, og hevet ingen, senket l, og hevet ingen")?;
     test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Medium")], expr,
-            "stor r med 4 høyre indeks, senket i, hevet j, senket k, senket l")?;
+            "stor r med 4 høyre indeks, senket i, og hevet ingen, senket ingen, og hevet j, senket k, og hevet ingen, senket l, og hevet ingen")?;
             return Ok(());
 
 }
@@ -133,7 +133,7 @@ fn huge_num_mmultiscripts() -> Result<()> {
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("nb", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "stor r med 4 venstre indeks, senket stor i; hevet stor j, og resterende venstre indeks stor k none stor l none slutt venstre indeks og med 5 høyre indeks, senket i, hevet j, senket k, senket l, og resterende høyre indeks m none slutt indeks")?;
+            "stor r med 4 venstre indeks, senket stor i, og hevet ingen; senket ingen, og hevet stor j; senket stor k, og hevet ingen; senket stor l, og hevet ingen, og med 5 høyre indeks, senket i, og hevet ingen, senket ingen, og hevet j, senket k, og hevet ingen, senket l, og hevet ingen, senket m, og hevet ingen")?;
             return Ok(());
 
 }

@@ -35,9 +35,6 @@ fn main() {
       .format_level(false)
       .init();
 
-   let expr = r#"
-<math><mo>(</mo><mi>f</mi><mo>∘</mo><mi>g</mi><mo>)</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>
-"#;
   // let expr = "<math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'>
   //       <msup intent='power($base(2, $base),silly($exp,-1.))'>
   //       <mi arg='base'>x</mi>
@@ -168,6 +165,13 @@ fn main() {
 //         <msub><mi mathvariant="normal">H</mi><mn>3</mn></msub>
 //     </math>
 //          "#;
+
+
+let expr = r#"
+<math intent="wibble($x,$y)"><mi arg="x">x</mi><mo>+</mo><mi arg="y">y</mi></math>
+"#;
+
+
   // let instant = Instant::now();
 
   // let rules_dir = "".to_string();    // Use MathCATRulesDir, potentially pointing to a zipped version
@@ -207,10 +211,14 @@ fn main() {
     eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1); 
   };
 
-  // match do_navigate_command("ZoomIn")  {
-  //   Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
-  //   Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
-  // }
+  match do_navigate_command("ZoomIn")  {
+    Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
+    Ok(speech) => info!("\nZoomIn speech: '{speech}'"),
+  }
+  match do_navigate_command("MoveNext") {
+    Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
+    Ok(speech) => info!("MoveNext speech: '{}'", speech),
+  }
   // match do_navigate_command("ZoomOut")  {
   //   Err(e) => {eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);},
   //   Ok(speech) => info!("\nZoomOut speech: '{speech}'"),
@@ -231,10 +239,6 @@ fn main() {
   // match do_navigate_command("MovePrevious") {
   //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
   //   Ok(speech) => info!("MovePrevious speech: '{}'", speech),
-  // }
-  // match do_navigate_command("MoveNext") {
-  //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,
-  //   Ok(speech) => info!("MoveNext speech: '{}'", speech),
   // }
   // match do_navigate_command("MoveNext") {
   //   Err(e) => eprintln!("Error: exiting -- {}", errors_to_string(&e)); exit(1);,

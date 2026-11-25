@@ -132,7 +132,7 @@ fn huge_num_mmultiscripts() -> Result<()> {
             <mprescripts/> <mi>I</mi><none/> <none/><mi>J</mi> <mi>K</mi><none/> <mi>L</mi><none/>
         </mmultiscripts></math>";
     test_prefs("pt", "SimpleSpeak", vec![("Verbosity", "Verbose")], expr,
-            "maiúscula r com 4 pré-escritos, pré-subscrito maiúscula i, pré-sobrescrito maiúscula j e pré-escritos alternados maiúscula k nenhum maiúscula l nenhum fim dos pré-escritos e com 5 pós-escritos, subscrito i sobrescrito j subscrito k subscrito l e índices alternados m nenhum fim dos índices")?;
+            "maiúscula r com 4 pré-escritos, pré-subscrito maiúscula i, pré-sobrescrito maiúscula j, pré-subscrito maiúscula k, pré-subscrito maiúscula l e com 5 pós-escritos, subscrito i sobrescrito j subscrito k subscrito l subscrito m")?;
             return Ok(());
 
 }

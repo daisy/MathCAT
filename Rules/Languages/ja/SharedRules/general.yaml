@@ -285,7 +285,7 @@
   match: "."
   replace:
   - x: "*[1]"
-  - T: "循環節"      # phrase('with repeating digits')
+  - T: "循環せつ"      # phrase('with repeating digits')
   - spell: "*[2]"
 
 - name: msubsup-skip-super
