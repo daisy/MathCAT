@@ -1232,6 +1232,22 @@ fn latin1_fractions_and_yen() -> Result<()> {
     return Ok(());
 }
 
+/// Ϊ and Ϋ say ダイアリティカ付き before the letter, the same order as ϊ, so the
+/// capital is not read in the English order おおもじ イオタ ダイアリティカ付き.
+#[test]
+fn greek_letters_with_dialytika() -> Result<()> {
+    for (ch, expected) in [
+        ("&#x03CA;", "ダイアリティカ付きイオタ"),
+        ("&#x03AA;", "おおもじ ダイアリティカ付き イオタ"),
+        ("&#x03AB;", "おおもじ ダイアリティカ付き ウプシロン"),
+    ] {
+        let expr = format!("<math><mi>{ch}</mi></math>");
+        test("ja", "ClearSpeak", &expr, expected)?;
+        test("ja", "SimpleSpeak", &expr, expected)?;
+    }
+    return Ok(());
+}
+
 /// Names that Open JTalk misread: 角カッコ was スミカッコ (上角カッコ ウエスミカッコ),
 /// 太白 was タイハク and 右下がり was ミギシタガリ.
 #[test]
