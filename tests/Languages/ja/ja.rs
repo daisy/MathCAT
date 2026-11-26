@@ -684,6 +684,19 @@ fn mathtype_arrows() -> Result<()> {
     return Ok(());
 }
 
+/// MathType's quadruple prime ee19 says クアドラプルプライム like ⁗, and the bar accents with a dot
+/// above say 上に like the 下に of ee1e and ee20.
+#[test]
+fn mathtype_accents_and_primes() -> Result<()> {
+    let expr = "<math><mi>&#xee19;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "クアドラプルプライム")?;
+    let expr = "<math><mi>&#xee1d;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "上にドット付きのバーアクセント")?;
+    let expr = "<math><mi>&#xee1f;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "上にダブルドット付きのバーアクセント")?;
+    return Ok(());
+}
+
 /// The MathType negated relations in U+EA00-EAFF use the words of the standard relations they look like:
 /// バックスラッシュ 部分集合オブ like ⟈, ノット 上にドット付き要素オブ like ⋵ and ∉, さらにきわめて like ⋘,
 /// 凹凸付き like ⪮ and ノット 四角の像 like ⋢, and contain is 要素として含む like ∋. A variant says 変形 like ⦜,
