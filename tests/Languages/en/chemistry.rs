@@ -171,6 +171,29 @@ fn beta_decay() -> Result<()> {
 }
 
 #[test]
+fn beta_decay_atomic_number_sum() -> Result<()> {
+  let expr = "<math>
+      <mmultiscripts><mi>C</mi><mprescripts/><mn>6</mn><mn>14</mn></mmultiscripts>
+      <mo>&#x2192;</mo>
+      <mmultiscripts><mi>N</mi><mprescripts/><mrow><mn>6</mn><mo>+</mo><mn>1</mn></mrow><mn>14</mn></mmultiscripts>
+      <mo>+</mo>
+      <mmultiscripts><mi>e</mi><mprescripts/><mrow><mo>&#x2212;</mo><mn>1</mn></mrow><mn>0</mn></mmultiscripts>
+    </math>";
+  test_prefs("en", "ClearSpeak", vec![("Verbosity", "Medium")], expr,
+    "super 14, sub 6, cap c; reacts to form; super 14, sub 6 plus 1, cap n; plus super 0, sub negative 1, e")?;
+  return Ok(());
+
+}
+
+#[test]
+fn sulfate_empty_prescripts() -> Result<()> {
+  let expr = "<math><mn>2</mn><mi>S</mi><mmultiscripts><mi>O</mi><mn>4</mn><mrow><mn>2</mn><mo>&#x2212;</mo></mrow><mprescripts/></mmultiscripts></math>";
+  test_prefs("en", "ClearSpeak", vec![("Verbosity", "Medium")], expr, "2, cap s; cap o, sub 4, super 2 minus")?;
+  return Ok(());
+
+}
+
+#[test]
 fn mhchem_beta_decay() -> Result<()> {
   let expr = "<math>
       <mrow>

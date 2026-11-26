@@ -996,10 +996,10 @@ fn is_chemistry_sanity_check(mathml: Element) -> bool {
                 return false;
             }
             return name(subscript) == "mn" ||
-                   (name(subscript) == "mrow" && subscript.children().len() == 3 &&
-                    name(as_element(subscript.children()[3])) == "mm" && 
-                    name(as_element(subscript.children()[1])) == "mo" &&
-                    matches!(as_str!(as_text(as_element(subscript.children()[1]))), "+" | "-"));
+                   (name(subscript) == "mrow" && subscript.children().len() == 2 &&
+                    name(as_element(subscript.children()[1])) == "mn" &&
+                    name(as_element(subscript.children()[0])) == "mo" &&
+                    matches!(as_str!(as_text(as_element(subscript.children()[0]))), "+" | "-"));
         }
         return false;
     }

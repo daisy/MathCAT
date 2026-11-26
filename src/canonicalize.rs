@@ -1263,8 +1263,13 @@ impl CanonicalizeContext {
 			}
 		}
 		else if element_name == "mmultiscripts" {
-			let has_prescripts = mathml.children().iter()
-					.any(|&child| name(as_element(child)) == "mprescripts");
+			let n_prescripts = mathml.children().iter()
+					.filter(|&&child| name(as_element(child)) == "mprescripts")
+					.count();
+			if n_prescripts > 1 {
+				bail!("{} has more than one mprescripts:\n{}", element_name, mml_to_string(mathml));
+			}
+			let has_prescripts = n_prescripts == 1;
 			if has_prescripts ^ (n_children.is_multiple_of(2)) {
 				bail!("{} has the wrong number of children:\n{}", element_name, mml_to_string(mathml));
 			}
@@ -2236,8 +2241,9 @@ impl CanonicalizeContext {
 				if let Some((i,_)) = children.iter().enumerate()
 					.find(|&(_,&el)| name(as_element(el)) == "mprescripts") { i } else { n };
 			let has_misplaced_mprescripts = i_mprescripts & 1 == 0;  // should be first, third, ... child
-			let mut has_proper_number_of_children = if i_mprescripts == n { n & 1 == 0} else { n & 1 != 0 }; // should be odd else even #
-			if has_misplaced_mprescripts || !has_proper_number_of_children || has_none_none_script_pair(&children) {
+			let has_proper_number_of_children = if i_mprescripts == n { n & 1 != 0 } else { n & 1 == 0 }; // base + pairs is odd, mprescripts makes it even
+			let has_trailing_mprescripts = i_mprescripts + 1 == n;
+			if has_misplaced_mprescripts || !has_proper_number_of_children || has_trailing_mprescripts || has_none_none_script_pair(&children) {
 				// need to reset the children
 				let mut new_children = Vec::with_capacity(n+2); // adjusting position of mprescripts might add two children
 				new_children.push(children[0]);
@@ -2247,23 +2253,27 @@ impl CanonicalizeContext {
 					let child = as_element(children[i]);
 					let child_name = name(child);
 					if child_name == "mprescripts" {
-						if has_misplaced_mprescripts {
-							let mtext = CanonicalizeContext::create_empty_element(&mathml.document());
-							new_children.push(ChildOfElement::Element(mtext));
-							has_proper_number_of_children = !has_proper_number_of_children;
-						}
 						new_children.push(children[i]);
 						i += 1;
 					} else if i+1 < n && child_name == "none" && name(as_element(children[i+1])) == "none" {
 						i += 2;		// found none, none pair
-					} else {
+					} else if i+1 < n && name(as_element(children[i+1])) != "mprescripts" {
 						// copy pair
 						new_children.push(children[i]);
 						new_children.push(children[i+1]);
 						i += 2;
+					} else {
+						// second script is missing
+						new_children.push(children[i]);
+						let mtext = CanonicalizeContext::create_empty_element(&mathml.document());
+						new_children.push(ChildOfElement::Element(mtext));
+						i += 1;
 					}
 				}
-				if new_children.len() <= 2 {  // base only, or base and </mprescripts>
+				if let Some(&last) = new_children.last() && name(as_element(last)) == "mprescripts" {
+					new_children.pop();
+				}
+				if new_children.len() <= 2 {  // base only, or base and a lone leftover child
 					mathml = as_element(new_children[0]);
 				} else {
 					mathml.replace_children(new_children);
@@ -8445,6 +8455,35 @@ mod canonicalize_tests {
         are_strs_canonically_equal_result(test_str, target_str, &[])
 	}
 
+
+	#[test]
+    fn missing_scripts_in_mmultiscripts() -> Result<()> {
+        let test_str = "<math><mmultiscripts><mi>C</mi><mi>k</mi><mprescripts/><mi>n</mi></mmultiscripts></math>";
+        let target_str = "<math>
+			<mmultiscripts>
+				<mi>C</mi>
+				<mi>k</mi>
+				<mtext data-added='missing-content' data-width='0'>&#xA0;</mtext>
+				<mprescripts></mprescripts>
+				<mi>n</mi>
+				<mtext data-added='missing-content' data-width='0'>&#xA0;</mtext>
+			</mmultiscripts>
+		</math>";
+        are_strs_canonically_equal_result(test_str, target_str, &[])
+	}
+
+	#[test]
+    fn duplicate_mprescripts_in_mmultiscripts() -> Result<()> {
+        let test_str = "<math><mmultiscripts><mi>C</mi><mi>k</mi><none/><mprescripts/><mprescripts/><mi>n</mi><none/></mmultiscripts></math>";
+        let target_str = ""; // shouldn't get to the point of comparing because the input is illegal.
+        let err = are_strs_canonically_equal_result(test_str, target_str, &[])
+            .expect_err("mmultiscripts with two mprescripts should be rejected");
+        assert!(
+            err.to_string().contains("mmultiscripts has more than one mprescripts:"),
+            "unexpected error message: {err}"
+        );
+        return Ok(());
+	}
 
 	#[test]
     fn tensor() -> Result<()> {
