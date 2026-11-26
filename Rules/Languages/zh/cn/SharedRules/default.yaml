@@ -333,10 +333,9 @@
   - T: ""        # phrase(x modified with y 'above' it)
 
 - name: default
-  #   Here we support up to 2 prescripts and up to 4 postscripts -- that should cover all reasonable cases
-  #   If there are more, we just dump them out without regard to sup/super :-(
-  # FIX: this could use more special cases 
-  # There is (currently) no way in MathCAT to deal with n-ary arguments other than "all" ('*') or an individual entry ('*[1]').
+  # Arbitrary numbers of pre-/post-scripts via the special `mmultiscripts:` replacement (issue #234).
+  # For each pair, $Subscript / $Superscript / $ScriptIndex (1-based) are set.
+  # process-order is required: speech uses [base, prescripts, postscripts]; most braille uses [prescripts, base, postscripts].
   tag: mmultiscripts
   match: "."
   variables:
@@ -345,68 +344,47 @@
   - NumChildren: "count(*)" # need to stash this since the count is wrong inside '*[...]' below
   - Postscripts: "*[position()>1 and position() < (last() + ($NumChildren mod 2) -count($Prescripts))]"
   replace:
-  - x: "*[1]"
-  - test:
-      if: "$Prescripts" # more common case
-      then:
-      - with:
-          variables:
-          - PreSubscript: "IfThenElse($Verbosity='Verbose', '前下标', '前下标')"
-          - PreSuperscript: "IfThenElse($Verbosity='Verbose', '前上标', '前上标')"
-          replace:
-          - test: # only bother announcing if there is more than one prescript
+  - with:
+      variables:
+      - PreSubscript: "IfThenElse($Verbosity='Verbose', '前下标', '前下标')"
+      - PreSuperscript: "IfThenElse($Verbosity='Verbose', '前上标', '前上标')"
+      - PostSubscript: "IfThenElse($Verbosity='Verbose', '下标', '下标')"
+      - PostSuperscript: "IfThenElse($Verbosity='Verbose', '上标', '上标')"
+      replace:
+      - mmultiscripts:
+          process-order: [base, prescripts, postscripts]
+          base:
+          - x: "*[1]"
+          - test: # only bother announcing if there is more than one prescript pair
               if: "count($Prescripts) > 2"
               then:
               - T: "有"      # phrase(substitute x 'with' y)
               - x: "count($Prescripts) div 2"
               - T: "组前置上下标"      # phrase(in this equation certain 'prescripts' apply)
               - pause: short
+          prescript-sub:
           - test:
-              if: "not($Prescripts[1][self::m:none])"
+              if: "not($Subscript[self::m:none])"
               then:
               - x: "$PreSubscript"
-              - x: "$Prescripts[1]"
+              - x: "$Subscript"
+          prescript-super:
           - test:
-              if: "not($Prescripts[1][self::m:none] or $Prescripts[2][self::m:none])"
+              if: "not($Subscript[self::m:none] or $Superscript[self::m:none])"
               then: [T: "且"]      # phrase(10 is greater than 8 'and' less than 15)
           - test:
-              if: "not($Prescripts[2][self::m:none])"
+              if: "not($Superscript[self::m:none])"
               then:
               - x: "$PreSuperscript"
-              - x: "$Prescripts[2]"
-          - pause: short
+              - x: "$Superscript"
           - test:
-              if: "count($Prescripts) > 2" # more common case
-              then:
-              - test:
-                  if: "not($Prescripts[3][self::m:none])"
-                  then:
-                  - x: "$PreSubscript"
-                  - x: "$Prescripts[3]"
-              - test:
-                  if: "not($Prescripts[3][self::m:none] or $Prescripts[4][self::m:none])"
-                  then: [T: "且"]      # phrase(10 is grater than 8 'and' less than 15)
-              - test:
-                  if: "not($Prescripts[4][self::m:none])"
-                  then:
-                  - x: "$PreSuperscript"
-                  - x: "$Prescripts[4]"
-              - test:
-                  if: "count($Prescripts) > 4" # give up and just dump them out so at least the content is there
-                  then:
-                  - T: "其余前置下标、上标依次交替"      # phrase(in this case there are values 'and alternating prescripts')
-                  - x: "$Prescripts[position() > 4]"
-                  - T: "结束前置上下标"      # phrase(This is where 'end prescripts' occurs)
-  - test:
-      if: "$Postscripts"
-      then:
-      - with:
-          variables:
-          - PostSubscript: "IfThenElse($Verbosity='Verbose', '下标', '下标')"
-          - PostSuperscript: "IfThenElse($Verbosity='Verbose', '上标', '上标')"
-          replace:
-          - test: # only bother announcing if there is more than one postscript
-              if: "count($Postscripts) > 2"
+              # Pause after each pair except the last when there are multiple pairs;
+              # always pause after a single pair (matches prior default rule).
+              if: "count($Prescripts) <= 2 or $ScriptIndex < count($Prescripts) div 2"
+              then: [pause: short]
+          postscript-sub:
+          - test: # announce once before the first postscript pair when there is more than one pair
+              if: "$ScriptIndex=1 and count($Postscripts) > 2"
               then:
               - test:
                   if: "$Prescripts"
@@ -416,72 +394,19 @@
               - T: "组后置上下标"      # phrase(this material includes several 'postscripts')
               - pause: short
           - test:
-              if: "not($Postscripts[1][self::m:none])"
+              if: "not($Subscript[self::m:none])"
               then:
               - x: "$PostSubscript"
-              - x: "$Postscripts[1]"
+              - x: "$Subscript"
+          postscript-super:
           - test:
-              if: "not($Postscripts[1][self::m:none] or $Postscripts[2][self::m:none])"
+              if: "not($Subscript[self::m:none] or $Superscript[self::m:none])"
               then: [T: "且"]      # phrase(10 is greater than 8 'and' less than 15)
           - test:
-              if: "not($Postscripts[2][self::m:none])"
+              if: "not($Superscript[self::m:none])"
               then:
               - x: "$PostSuperscript"
-              - x: "$Postscripts[2]"
-          - test:
-              if: "count($Postscripts) > 2"
-              then:
-              - test:
-                  if: "not($Postscripts[3][self::m:none])"
-                  then:
-                  - x: "$PostSubscript"
-                  - x: "$Postscripts[3]"
-              - test:
-                  if: "not($Postscripts[3][self::m:none] or $Postscripts[4][self::m:none])"
-                  then: [T: "且"]      # phrase(10 is greater than 8 'and' less than 15)
-              - test:
-                  if: "not($Postscripts[4][self::m:none])"
-                  then:
-                  - x: "$PostSuperscript"
-                  - x: "$Postscripts[4]"
-              - test:
-                  if: "count($Postscripts) > 4"
-                  then:
-                  - test:
-                      if: "not($Postscripts[5][self::m:none])"
-                      then:
-                      - x: "$PostSubscript"
-                      - x: "$Postscripts[5]"
-                  - test:
-                      if: "not($Postscripts[5][self::m:none] or $Postscripts[6][self::m:none])"
-                      then: [T: "且"]      # phrase(10 is greater than 8 'and' less than 15)
-                  - test:
-                      if: "not($Postscripts[6][self::m:none])"
-                      then:
-                      - x: "$PostSuperscript"
-                      - x: "$Postscripts[6]"
-                  - test:
-                      if: "count($Postscripts) > 6"
-                      then:
-                      - test:
-                          if: "not($Postscripts[7][self::m:none])"
-                          then:
-                          - x: "$PostSubscript"
-                          - x: "$Postscripts[7]"
-                      - test:
-                          if: "not($Postscripts[7][self::m:none] or $Postscripts[8][self::m:none])"
-                          then: [T: "且"]      # phrase(10 is less than 15 'and' greater than 5)
-                      - test:
-                          if: "not($Postscripts[8][self::m:none])"
-                          then:
-                          - x: "$PostSuperscript"
-                          - x: "$Postscripts[8]"
-                      - test:
-                          if: "count($Postscripts) > 8" # give up and just dump them out so at least the content is there
-                          then:
-                          - T: "其余后置下标、上标依次交替"      # phrase(this situation involves complexities 'and alternating scripts')
-                          - x: "$Postscripts[position() > 8]"
-                          - T: "结束后置上下标"      # phrase(At this point 'end scripts' occurs)
+              - x: "$Superscript"
 
 - name: default
   tag: [mtable, array]

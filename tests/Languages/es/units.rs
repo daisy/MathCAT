@@ -706,3 +706,27 @@ fn one_degree() -> Result<()> {
     }
     return Ok(());
 }
+
+#[test]
+fn extra_units() -> Result<()> {
+    // tex y barn aceptan prefijos; gon, dioptría, quilate y vuelta no; plural con concordancia
+    let cases = [
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">tex</mi></math>", "5 tex"),
+        ("<math><mn>1</mn><mi mathvariant=\"normal\">tex</mi></math>", "un tex"),
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">ktex</mi></math>", "5 kilotex"),
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">barn</mi></math>", "5 barns"),
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">mbarn</mi></math>", "5 milibarns"),
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">gon</mi></math>", "5 gones"),
+        ("<math><mn>1</mn><mi mathvariant=\"normal\">gon</mi></math>", "un gon"),
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">dioptría</mi></math>", "5 dioptrías"),
+        ("<math><mn>1</mn><mi mathvariant=\"normal\">dioptría</mi></math>", "una dioptría"),
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">quilate</mi></math>", "5 quilates"),
+        ("<math><mn>1</mn><mi mathvariant=\"normal\">vuelta</mi></math>", "una vuelta"),
+        ("<math><mn>5</mn><mi mathvariant=\"normal\">vuelta</mi></math>", "5 vueltas"),
+    ];
+    for (expr, speech) in cases {
+        test("es", "ClearSpeak", expr, speech)?;
+        test("es", "SimpleSpeak", expr, speech)?;
+    }
+    return Ok(());
+}
