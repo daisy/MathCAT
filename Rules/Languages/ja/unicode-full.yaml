@@ -3237,7 +3237,7 @@
  - "": [T: "太いアンダーバーアクセント"]              # 0xee22
  - "": [T: "右に黒丸付きのバーアクセント"]        # 0xee23
  - "": [T: "上の大きいドット"]                  # 0xee24
- - "": [t: "位置揃え記号"]                         # 0xef00
+ - "": [T: "位置揃え記号"]                         # 0xef00
  - "": [t: ""]                                  # 0xef01
  - "​": [T: ""]                                  # 0x200b
  - "": [t: ""]                                  # 0xef02
@@ -3256,13 +3256,13 @@
  - "": [t: ""]                                  # 0xef23
  - "": [t: ""]                                  # 0xef24
  - "": [t: ""]                                  # 0xef29
- - "": [t: "欠落項"]                         # 0xef41
- - "": [t: "左に矢印付き時計回り周回インテグラル"] # 0xef80
- - "": [t: "四角付きインテグラル"]            # 0xef81
- - "": [t: "スラッシュ付きインテグラル"]             # 0xef82
- - "": [t: "逆インテグラル"]                # 0xef83
- - "": [t: "ゼロ ゼロの上にゼロ ゼロ"]   # 0xef90
- - "": [t: "スラッシュ付きゼロ"]                    # 0xef91
+ - "": [T: "欠落項"]                         # 0xef41
+ - "": [T: "左に矢印付き時計回り周回インテグラル"] # 0xef80
+ - "": [T: "四角付きインテグラル"]            # 0xef81
+ - "": [T: "スラッシュ付きインテグラル"]             # 0xef82
+ - "": [T: "逆インテグラル"]                # 0xef83
+ - "": [T: "ゼロゼロの上にゼロゼロ"]   # 0xef90
+ - "": [T: "スラッシュ付きゼロ"]                    # 0xef91
 
  # fraktur chars in math alphabetic block and also MathType private use area
  # Some of these are reserved because they were used in Plane 0 -- that shouldn't be an issue other than causing the other chars to not display

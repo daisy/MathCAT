@@ -720,6 +720,15 @@ fn mathtype_negated_relations() -> Result<()> {
     return Ok(());
 }
 
+/// MathType's ef90 said ゼロ ゼロの上にゼロ ゼロ, which Open JTalk read as ゼロ、ゼロノウエニゼロ、ゼロ
+/// (0, 0 over 0, 0); it is now one word, ゼロゼロの上にゼロゼロ.
+#[test]
+fn mathtype_double_zero_over_double_zero() -> Result<()> {
+    let expr = "<math><mi>&#xef90;</mi></math>";
+    test("ja", "SimpleSpeak", expr, "ゼロゼロの上にゼロゼロ")?;
+    return Ok(());
+}
+
 /// The telegraph symbols for months, hours and days had no entry. The hours decompose to 点, which is
 /// "o'clock" in Chinese but てん ("point") in Japanese, so 0点 would be れいてん; they are spoken with 時.
 /// Open JTalk reads 1日 alone as イチニチ ("one day"), so the first day is ついたち.
