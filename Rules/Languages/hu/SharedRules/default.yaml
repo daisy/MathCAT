@@ -303,14 +303,14 @@
           - x: "$PreSubscript"
           - test:
               if: "$Subscript[self::m:none]"
-              then: [t: "semmi"]
+              then: [T: "semmi"]
               else: [x: "$Subscript"]
           prescript-super:
           - T: "és"      # phrase(10 is greater than 8 'and' less than 15)
           - x: "$PreSuperscript"
           - test:
               if: "$Superscript[self::m:none]"
-              then: [t: "semmi"]
+              then: [T: "semmi"]
               else: [x: "$Superscript"]
           - test:
               # Pause after each pair except the last when there are multiple pairs;
@@ -330,14 +330,14 @@
           - x: "$PostSubscript"
           - test:
               if: "$Subscript[self::m:none]"
-              then: [t: "semmi"]
+              then: [T: "semmi"]
               else: [x: "$Subscript"]
           postscript-super:
           - T: "és"      # phrase(10 is greater than 8 'and' less than 15)
           - x: "$PostSuperscript"
           - test:
               if: "$Superscript[self::m:none]"
-              then: [t: "semmi"]
+              then: [T: "semmi"]
               else: [x: "$Superscript"]
 
 - name: default
